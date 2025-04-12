@@ -1,7 +1,7 @@
 [package]
 name = "syndeos"
-version = "0.1.0"
-description = "A Tauri App"
+version = "1.0.0"
+description = "Server management desktop application to be used offline."
 authors = ["you"]
 edition = "2021"
 
