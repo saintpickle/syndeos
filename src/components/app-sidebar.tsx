@@ -1,10 +1,9 @@
 import * as React from "react"
 import {
-    IconBrandGithub,
-    IconChartBar,
     IconCloud,
     IconInnerShadowTop,
     IconKey,
+    IconBrandGithub,
     IconSettings,
 } from "@tabler/icons-react"
 
@@ -30,11 +29,6 @@ const data = {
             title: "SSH Keys",
             url: "#",
             icon: IconKey,
-        },
-        {
-            title: "Analytics",
-            url: "#",
-            icon: IconChartBar,
         },
     ],
     navSecondary: [
