@@ -3,8 +3,8 @@ import {
     IconBrandGithub,
     IconChartBar,
     IconCloud,
-    IconDashboard,
     IconInnerShadowTop,
+    IconKey,
     IconSettings,
 } from "@tabler/icons-react"
 
@@ -22,14 +22,14 @@ import {
 const data = {
     navMain: [
         {
-            title: "Dashboard",
-            url: "#",
-            icon: IconDashboard,
-        },
-        {
             title: "Servers",
             url: "#",
             icon: IconCloud,
+        },
+        {
+            title: "SSH Keys",
+            url: "#",
+            icon: IconKey,
         },
         {
             title: "Analytics",
