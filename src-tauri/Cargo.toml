@@ -1,5 +1,5 @@
 [package]
-name = "syndeos"
+name = "Syndeos"
 version = "1.0.0"
 description = "Server management desktop application to be used offline."
 authors = ["you"]

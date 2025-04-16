@@ -1,7 +1,6 @@
 import * as React from "react"
 import {
     IconCloud,
-    IconInnerShadowTop,
     IconKey,
     IconBrandGithub,
     IconSettings,
@@ -56,7 +55,7 @@ export function AppSidebar({...props}: React.ComponentProps<typeof Sidebar>) {
                             className="data-[slot=sidebar-menu-button]:!p-1.5"
                         >
                             <a href="#">
-                                <IconInnerShadowTop className="!size-5"/>
+                                <img src="/icon.svg" alt="Syndeos Logo" className="size-12" />
                                 <span className="text-base font-semibold">Syndeos</span>
                             </a>
                         </SidebarMenuButton>
