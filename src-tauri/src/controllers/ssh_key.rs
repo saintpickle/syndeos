@@ -1,8 +1,8 @@
-use tauri::AppHandle;
-use std::fs;
-use rusqlite::params;
 use crate::database::connection::get;
 use crate::models::SshKey;
+use rusqlite::params;
+use std::fs;
+use tauri::AppHandle;
 
 #[tauri::command]
 pub fn init_ssh_keys(app_handle: AppHandle) -> Result<Vec<SshKey>, String> {
