@@ -1,29 +1,33 @@
 import {invoke} from "@tauri-apps/api/core";
-import {useEffect} from "react";
+import {useState, useEffect} from "react";
+import KeyCard from "@/components/cards/key.tsx";
+import {SshKeys} from "@/types.ts";
 
 export default function KeysPage() {
+    const [keys, setKeys] = useState<SshKeys| undefined>();
     async function get_keys(){
-        return await invoke("get_ssh_keys");
+        return await invoke<SshKeys>("get_ssh_keys");
     }
 
     useEffect(() => {
-       get_keys().then((data) => console.log(data));
+       get_keys()
+           .then((data: SshKeys) => {
+               if (!data) {
+                   throw new Error("The list of keys is undefined.");
+               }
+
+               setKeys(data);
+           })
+           .catch((error) => console.log(error))
     }, []);
 
     return (
         <div className="grid auto-rows-min gap-4 md:grid-cols-2">
-            <div className="aspect-video rounded-xl bg-white text-3xl flex justify-center items-center">
-                <p>SSH Key 1</p>
-            </div>
-            <div className="aspect-video rounded-xl bg-white text-3xl flex justify-center items-center">
-                <p>SSH Key 2</p>
-            </div>
-            <div className="aspect-video rounded-xl bg-white text-3xl flex justify-center items-center">
-                <p>SSH Key 3</p>
-            </div>
-            <div className="aspect-video rounded-xl bg-white text-3xl flex justify-center items-center">
-                <p>SSH Key 4</p>
-            </div>
+            {keys?.map((key, idx) => {
+                return (
+                    <KeyCard key={idx} {...key} />
+                )
+            })}
         </div>
     );
 }
