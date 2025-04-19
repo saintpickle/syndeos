@@ -27,17 +27,8 @@ pub fn init_ssh_keys(app_handle: AppHandle) -> Result<Vec<SshKey>, String> {
         let entry = entry.map_err(|e| format!("Failed to read directory entry: {}", e))?;
         let path = entry.path();
 
-        // Skip directories and public keys
-        if path.is_dir() || path.to_string_lossy().ends_with(".pub") {
+        if path.is_dir() || !path.to_string_lossy().ends_with(".pub") {
             continue;
-        }
-
-        // Skip files that don't look like SSH keys (optional heuristic)
-        if let Some(ext) = path.extension() {
-            // Skip known non-key extensions
-            if ext == "config" || ext == "known_hosts" {
-                continue;
-            }
         }
 
         // Get the filename as the key name

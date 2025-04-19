@@ -4,6 +4,30 @@ mod controllers;
 
 use tauri::AppHandle;
 use database::connection as conn;
+use controllers::ssh_key::{
+    init_ssh_keys,
+    add_ssh_key,
+    delete_ssh_key,
+    get_ssh_key,
+    get_ssh_keys,
+    generate_ssh_key,
+    set_default_ssh_key
+};
+
+use controllers::server::{
+    add_server,
+    delete_server,
+    get_server,
+    get_servers,
+    update_server
+};
+
+use controllers::setting::{
+    init_default_settings,
+    get_settings,
+    get_setting,
+    update_setting
+};
 
 #[tauri::command]
 fn init_app(app_handle: AppHandle) -> Result<String, String> {
@@ -11,12 +35,12 @@ fn init_app(app_handle: AppHandle) -> Result<String, String> {
 
     println!("Tauri SQLite Database Initialization Successful!");
 
-    controllers::setting::init_default_settings(app_handle.clone())?;
+    init_default_settings(app_handle.clone())?;
 
     println!("Tauri Settings Initialization Successful!");
 
-    controllers::ssh_key::init_ssh_keys(app_handle.clone())?;
-    
+    init_ssh_keys(app_handle.clone())?;
+
     println!("Tauri SSH Keys Initialization Successful!");
 
     Ok(db_result)
@@ -29,21 +53,22 @@ pub fn run() {
         .invoke_handler(tauri::generate_handler![
             init_app,
 
-            controllers::server::add_server,
-            controllers::server::get_server,
-            controllers::server::update_server,
-            controllers::server::delete_server,
-            controllers::server::get_servers,
+            add_server,
+            get_server,
+            update_server,
+            delete_server,
+            get_servers,
 
-            controllers::ssh_key::add_ssh_key,
-            controllers::ssh_key::delete_ssh_key,
-            controllers::ssh_key::get_ssh_key,
-            controllers::ssh_key::set_default_ssh_key,
-            controllers::ssh_key::generate_ssh_key,
+            add_ssh_key,
+            delete_ssh_key,
+            get_ssh_key,
+            get_ssh_keys,
+            set_default_ssh_key,
+            generate_ssh_key,
 
-            controllers::setting::get_setting,
-            controllers::setting::get_settings,
-            controllers::setting::update_setting,
+            get_setting,
+            get_settings,
+            update_setting,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
