@@ -54,9 +54,9 @@ export function AppSidebar({...props}: React.ComponentProps<typeof Sidebar>) {
                             asChild
                             className="data-[slot=sidebar-menu-button]:!py-7"
                         >
-                            <a href="#" className="flex justify-items-start">
+                            <a href="#" className="flex justify-items-start gap-4">
                                 <img src="/icon.svg" alt="Syndeos Logo" className="size-14 rounded-4xl" />
-                                <span className="text-base font-semibold">Syndeos</span>
+                                <span className="text-2xl font-light">Syndeos</span>
                             </a>
                         </SidebarMenuButton>
                     </SidebarMenuItem>
