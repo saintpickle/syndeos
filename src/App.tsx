@@ -1,8 +1,10 @@
 import {invoke} from "@tauri-apps/api/core";
 import {useEffect} from "react";
-import {SidebarProvider, SidebarInset} from "@/components/ui/sidebar.tsx";
+import {SidebarProvider} from "@/components/ui/sidebar.tsx";
+import MainContent from "@/components/main-content.tsx";
 import {AppSidebar} from "@/components/app-sidebar.tsx";
 import "./App.css";
+import {PageProvider} from "@/components/providers/page.tsx";
 
 function App() {
     useEffect(() => {
@@ -13,14 +15,12 @@ function App() {
 
     return (
         <main>
-            <SidebarProvider>
-                <AppSidebar/>
-                <SidebarInset>
-                    <div className="flex flex-1 flex-col gap-4 p-4 bg-slate-200">
-                        {/* page provider here*/}
-                    </div>
-                </SidebarInset>
-            </SidebarProvider>
+            <PageProvider>
+                <SidebarProvider>
+                    <AppSidebar/>
+                    <MainContent/>
+                </SidebarProvider>
+            </PageProvider>
         </main>
     );
 }
