@@ -7,15 +7,17 @@ use database::connection as conn;
 
 #[tauri::command]
 fn init_app(app_handle: AppHandle) -> Result<String, String> {
-    let handler = app_handle.clone();
-
-    let db_result = conn::init_database(app_handle)?;
+    let db_result = conn::init_database(app_handle.clone())?;
 
     println!("Tauri SQLite Database Initialization Successful!");
 
-    controllers::setting::init_default_settings(handler)?;
+    controllers::setting::init_default_settings(app_handle.clone())?;
 
     println!("Tauri Settings Initialization Successful!");
+
+    controllers::ssh_key::init_ssh_keys(app_handle.clone())?;
+    
+    println!("Tauri SSH Keys Initialization Successful!");
 
     Ok(db_result)
 }
@@ -34,6 +36,7 @@ pub fn run() {
             controllers::server::get_servers,
 
             controllers::ssh_key::add_ssh_key,
+            controllers::ssh_key::delete_ssh_key,
             controllers::ssh_key::get_ssh_key,
             controllers::ssh_key::set_default_ssh_key,
             controllers::ssh_key::generate_ssh_key,
