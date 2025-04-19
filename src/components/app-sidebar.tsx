@@ -52,10 +52,10 @@ export function AppSidebar({...props}: React.ComponentProps<typeof Sidebar>) {
                     <SidebarMenuItem>
                         <SidebarMenuButton
                             asChild
-                            className="data-[slot=sidebar-menu-button]:!p-1.5"
+                            className="data-[slot=sidebar-menu-button]:!py-7"
                         >
-                            <a href="#">
-                                <img src="/icon.svg" alt="Syndeos Logo" className="size-12" />
+                            <a href="#" className="flex justify-items-start">
+                                <img src="/icon.svg" alt="Syndeos Logo" className="size-14 rounded-4xl" />
                                 <span className="text-base font-semibold">Syndeos</span>
                             </a>
                         </SidebarMenuButton>
