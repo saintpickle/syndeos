@@ -1,8 +1,8 @@
 import React, { createContext, useContext, useState } from 'react';
-import ServersPage from '@/components/pages/servers';
-import ServerPage from '@/components/pages/server';
-import SettingsPage from '@/components/pages/settings';
-import KeysPage from '@/components/pages/keys';
+import ServersPage from '@/components/features/servers/page';
+import ServerPage from '@/components/features/server/page';
+import SettingsPage from '@/components/features/settings/page';
+import KeysPage from '@/components/features/ssh-keys/page';
 
 // Define page types
 type PageKey = 'servers' | 'server' | 'settings' | 'keys';
