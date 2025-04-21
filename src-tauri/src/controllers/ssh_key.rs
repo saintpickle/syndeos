@@ -222,8 +222,9 @@ pub fn generate_ssh_key(app_handle: AppHandle, name: String) -> Result<String, S
         }
     }
 
-    let key_path = ssh_dir.join(format!("{}", name));
+    let key_path = ssh_dir.join(format!("{}.pub", name));
     let key_path_str = key_path.to_str().ok_or("Invalid path")?.to_string();
+    let key_name_str = format!("{}.pub", name.clone());
 
     // Generate key using ssh-keygen via Command
     use std::process::Command;
@@ -243,7 +244,7 @@ pub fn generate_ssh_key(app_handle: AppHandle, name: String) -> Result<String, S
     }
 
     // Add to database
-    add_ssh_key(app_handle, name.clone(), key_path_str.clone(), false)?;
+    add_ssh_key(app_handle, key_name_str, key_path_str.clone(), false)?;
 
     Ok(key_path_str)
 }
