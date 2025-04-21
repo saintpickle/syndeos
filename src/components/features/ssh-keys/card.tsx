@@ -50,7 +50,6 @@ export default function SshKeyCard({ sshKey, update_keys }: Props) {
                 <CardFooter className="flex justify-between">
                     <Button
                         variant="outline"
-                        className="cursor-pointer"
                         onClick={() => {
                             invoke("set_default_ssh_key", { id: sshKey.id })
                                 .then(() => update_keys())
@@ -62,7 +61,6 @@ export default function SshKeyCard({ sshKey, update_keys }: Props) {
                     </Button>
                     <Button
                         variant="destructive"
-                        className="cursor-pointer"
                         onClick={() => setIsDeleteModalOpen(true)}
                     >
                         Delete
