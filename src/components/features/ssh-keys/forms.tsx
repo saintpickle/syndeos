@@ -24,15 +24,23 @@ import {
 import {Input} from "@/components/ui/input";
 import {Checkbox} from "@/components/ui/checkbox";
 
+const generateKeySchema = z.object({
+    name: z.string().min(1, "Name is required"),
+    password: z.string()
+        .min(8, "Password must be at least 8 characters")
+        .max(32, "Password must be less than 32 characters")
+        .optional(),
+    isDefault: z.boolean().optional()
+});
+
 const addKeySchema = z.object({
     name: z.string().min(1, "Name is required"),
     path: z.string().min(1, "Path is required"),
-    isDefault: z.boolean().default(false),
-});
-
-const generateKeySchema = z.object({
-    name: z.string().min(1, "Name is required"),
-    isDefault: z.boolean().default(false),
+    password: z.string()
+        .min(8, "Password must be at least 8 characters")
+        .max(32, "Password must be less than 32 characters")
+        .optional(),
+    isDefault: z.boolean().optional(),
 });
 
 type AddKeyFormProps = {
@@ -41,7 +49,16 @@ type AddKeyFormProps = {
 
 export function SshKeyForms({onSuccess}: AddKeyFormProps) {
     const [open, setOpen] = useState(false);
-    const [activeTab, setActiveTab] = useState("add");
+    const [activeTab, setActiveTab] = useState("generate");
+
+    // Form for generating a new key
+    const generateKeyForm = useForm<z.infer<typeof generateKeySchema>>({
+        resolver: zodResolver(generateKeySchema),
+        defaultValues: {
+            name: "",
+            isDefault: false
+        },
+    });
 
     // Form for adding an existing key
     const addKeyForm = useForm<z.infer<typeof addKeySchema>>({
@@ -49,39 +66,9 @@ export function SshKeyForms({onSuccess}: AddKeyFormProps) {
         defaultValues: {
             name: "",
             path: "",
-            isDefault: false,
+            isDefault: false
         },
     });
-
-    // Form for generating a new key
-    const generateKeyForm = useForm<z.infer<typeof generateKeySchema>>({
-        resolver: zodResolver(generateKeySchema),
-        defaultValues: {
-            name: "",
-            isDefault: false,
-        },
-    });
-
-    function onAddKeySubmit(values: z.infer<typeof addKeySchema>) {
-        // Add this check to block submission when form is invalid
-        if (!addKeyForm.formState.isValid) {
-            // Trigger validation on all fields
-            addKeyForm.trigger();
-            return;
-        }
-
-        invoke("add_ssh_key", {
-            name: values.name,
-            path: values.path,
-            isDefault: values.isDefault,
-        })
-            .then(() => {
-                setOpen(false);
-                addKeyForm.reset();
-                onSuccess();
-            })
-            .catch((error) => console.log(error));
-    }
 
     function onGenerateKeySubmit(values: z.infer<typeof generateKeySchema>) {
         // Add this check to block submission when form is invalid
@@ -93,6 +80,7 @@ export function SshKeyForms({onSuccess}: AddKeyFormProps) {
 
         invoke("generate_ssh_key", {
             name: values.name,
+            password: values.password ?? ""
         })
             .then((keyPath) => {
                 if (values.isDefault) {
@@ -113,6 +101,28 @@ export function SshKeyForms({onSuccess}: AddKeyFormProps) {
             .catch((error) => console.log(error));
     }
 
+    function onAddKeySubmit(values: z.infer<typeof addKeySchema>) {
+        // Add this check to block submission when form is invalid
+        if (!addKeyForm.formState.isValid) {
+            // Trigger validation on all fields
+            addKeyForm.trigger();
+            return;
+        }
+
+        invoke("add_ssh_key", {
+            name: values.name,
+            path: values.path,
+            password: values.password ?? "",
+            isDefault: values.isDefault,
+        })
+            .then(() => {
+                setOpen(false);
+                addKeyForm.reset();
+                onSuccess();
+            })
+            .catch((error) => console.log(error));
+    }
+
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
@@ -124,9 +134,74 @@ export function SshKeyForms({onSuccess}: AddKeyFormProps) {
                 </DialogHeader>
                 <Tabs value={activeTab} onValueChange={setActiveTab}>
                     <TabsList className="grid w-full grid-cols-2">
-                        <TabsTrigger value="add">Add Existing Key</TabsTrigger>
                         <TabsTrigger value="generate">Generate New Key</TabsTrigger>
+                        <TabsTrigger value="add">Add Existing Key</TabsTrigger>
                     </TabsList>
+                    <TabsContent value="generate">
+                        <Form {...generateKeyForm}>
+                            <form
+                                onSubmit={generateKeyForm.handleSubmit(onGenerateKeySubmit)}
+                                className="space-y-4 pt-4"
+                            >
+                                <FormField
+                                    control={generateKeyForm.control}
+                                    name="name"
+                                    render={({field}) => (
+                                        <FormItem>
+                                            <FormLabel>Key Name</FormLabel>
+                                            <FormControl>
+                                                <Input placeholder="my_new_key" {...field} />
+                                            </FormControl>
+                                            <FormDescription>
+                                                A name for the new SSH key
+                                            </FormDescription>
+                                            <FormMessage/>
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    control={generateKeyForm.control}
+                                    name="password"
+                                    render={({field}) => (
+                                        <FormItem>
+                                            <FormLabel>Key Password</FormLabel>
+                                            <FormControl>
+                                                <Input placeholder="password123" {...field} />
+                                            </FormControl>
+                                            <FormDescription>
+                                                SSH Key password (optional)
+                                            </FormDescription>
+                                            <FormMessage/>
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    control={generateKeyForm.control}
+                                    name="isDefault"
+                                    render={({field}) => (
+                                        <FormItem
+                                            className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                                            <FormControl>
+                                                <Checkbox
+                                                    checked={field.value}
+                                                    onCheckedChange={field.onChange}
+                                                />
+                                            </FormControl>
+                                            <div className="space-y-1 leading-none">
+                                                <FormLabel>
+                                                    Set as default
+                                                </FormLabel>
+                                                <FormDescription>
+                                                    Use this key by default for new server connections
+                                                </FormDescription>
+                                            </div>
+                                        </FormItem>
+                                    )}
+                                />
+                                <Button type="submit" className="w-full">Generate Key</Button>
+                            </form>
+                        </Form>
+                    </TabsContent>
                     <TabsContent value="add">
                         <Form {...addKeyForm}>
                             <form
@@ -166,6 +241,22 @@ export function SshKeyForms({onSuccess}: AddKeyFormProps) {
                                     )}
                                 />
                                 <FormField
+                                    control={generateKeyForm.control}
+                                    name="password"
+                                    render={({field}) => (
+                                        <FormItem>
+                                            <FormLabel>Key Password</FormLabel>
+                                            <FormControl>
+                                                <Input placeholder="password123" {...field} />
+                                            </FormControl>
+                                            <FormDescription>
+                                                SSH Key password (optional)
+                                            </FormDescription>
+                                            <FormMessage/>
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
                                     control={addKeyForm.control}
                                     name="isDefault"
                                     render={({field}) => (
@@ -189,55 +280,6 @@ export function SshKeyForms({onSuccess}: AddKeyFormProps) {
                                     )}
                                 />
                                 <Button type="submit" className="w-full">Add Key</Button>
-                            </form>
-                        </Form>
-                    </TabsContent>
-                    <TabsContent value="generate">
-                        <Form {...generateKeyForm}>
-                            <form
-                                onSubmit={generateKeyForm.handleSubmit(onGenerateKeySubmit)}
-                                className="space-y-4 pt-4"
-                            >
-                                <FormField
-                                    control={generateKeyForm.control}
-                                    name="name"
-                                    render={({field}) => (
-                                        <FormItem>
-                                            <FormLabel>Key Name</FormLabel>
-                                            <FormControl>
-                                                <Input placeholder="my_new_key" {...field} />
-                                            </FormControl>
-                                            <FormDescription>
-                                                A name for the new SSH key
-                                            </FormDescription>
-                                            <FormMessage/>
-                                        </FormItem>
-                                    )}
-                                />
-                                <FormField
-                                    control={generateKeyForm.control}
-                                    name="isDefault"
-                                    render={({field}) => (
-                                        <FormItem
-                                            className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
-                                            <FormControl>
-                                                <Checkbox
-                                                    checked={field.value}
-                                                    onCheckedChange={field.onChange}
-                                                />
-                                            </FormControl>
-                                            <div className="space-y-1 leading-none">
-                                                <FormLabel>
-                                                    Set as default
-                                                </FormLabel>
-                                                <FormDescription>
-                                                    Use this key by default for new server connections
-                                                </FormDescription>
-                                            </div>
-                                        </FormItem>
-                                    )}
-                                />
-                                <Button type="submit" className="w-full">Generate Key</Button>
                             </form>
                         </Form>
                     </TabsContent>

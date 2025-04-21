@@ -60,6 +60,7 @@ pub mod connection {
                 id INTEGER PRIMARY KEY,
                 name TEXT NOT NULL UNIQUE,
                 path TEXT NOT NULL,
+                password TEXT,
                 is_default BOOLEAN NOT NULL DEFAULT 0,
                 created_at TEXT NOT NULL,
                 updated_at TEXT NOT NULL
