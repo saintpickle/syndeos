@@ -261,7 +261,7 @@ pub fn generate_ssh_key(app_handle: AppHandle, name: String, password: String) -
     }
 
     // Add to database
-    add_ssh_key(app_handle, public_key_name, public_key_path, password, false)?;
+    add_ssh_key(app_handle, public_key_name, public_key_path.clone(), password, false)?;
 
-    Ok(key_path_str)
+    Ok(public_key_path)
 }

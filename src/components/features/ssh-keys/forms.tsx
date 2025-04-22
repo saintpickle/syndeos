@@ -83,13 +83,17 @@ export function SshKeyForms({onSuccess}: AddKeyFormProps) {
             password: values.password ?? ""
         })
             .then((keyPath) => {
+                console.log("path", keyPath);
+
                 if (values.isDefault) {
                     // If the user wants this to be the default key, set it
                     invoke("get_ssh_keys")
                         .then((keys: any) => {
+                            console.log("keys", keys);
+
                             const newKey = keys.find((k: any) => k.path === keyPath);
                             if (newKey && newKey.id) {
-                                invoke("set_default_ssh_key", {id: newKey.id});
+                                invoke("set_default_ssh_key", {id: newKey.id}).then(() => onSuccess());
                             }
                         })
                         .catch(error => console.log(error));
