@@ -19,10 +19,11 @@ Syndeos is built using modern web and desktop technologies:
 
 - **Tauri v2**: Cross-platform framework for building desktop applications
 - **Rust**: Backend functionality and system integration
-- **React 19**: Frontend interface
+- **React v19**: Frontend interface
 - **Tailwind CSS v4**: Utility-first CSS framework
 - **Shadcn/UI**: Component library for beautiful, accessible UI elements
 - **TypeScript**: Type-safe JavaScript
+- **Bun**: Javascript runtime, pkg manager, and development tooling
 
 ## Getting Started
 
@@ -30,8 +31,7 @@ Syndeos is built using modern web and desktop technologies:
 
 Before installing Syndeos, ensure you have the following installed:
 
-- [Node.js](https://nodejs.org/) (v18 or later)
-- [Bun.js](https://bun.sh/) (v1.2 or later)
+- [Bun.js](https://bun.sh/) (v1.2 or later) (No Node or NPM)
 - [Rust](https://www.rust-lang.org/tools/install) (latest stable)
 - Platform-specific dependencies for Tauri development:
   - **Windows**: Visual Studio C++ Build Tools
@@ -48,12 +48,12 @@ Before installing Syndeos, ensure you have the following installed:
 
 2. Install dependencies:
    ```bash
-   npm install
+   bun install
    ```
 
 3. Build the application:
    ```bash
-   npm run tauri build
+   bun run tauri build
    ```
 
 4. The built application will be available in the `src-tauri/target/release` directory.
@@ -62,12 +62,12 @@ Before installing Syndeos, ensure you have the following installed:
 
 1. Install dependencies:
    ```bash
-   npm install
+   bun install
    ```
 
 2. Start the development server:
    ```bash
-   npm run tauri dev
+   bun run tauri dev
    ```
 
 ## Usage
