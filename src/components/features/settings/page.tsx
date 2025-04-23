@@ -10,6 +10,7 @@ import {
     SelectValue,
 } from "@/components/ui/select"
 import { Checkbox } from "@/components/ui/checkbox"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 
 export default function SettingsPage() {
     return (
@@ -90,7 +91,63 @@ export default function SettingsPage() {
                     Coming soon!
                 </div>
             </TabsContent>
-            <TabsContent value="ui">TODO 3</TabsContent>
+            <TabsContent value="ui">
+                <div className="my-3">
+                    <Label className="mb-3">Theme Selection</Label>
+                    <RadioGroup defaultValue="light">
+                        <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="light" id="light" className="bg-white" />
+                            <Label htmlFor="light">Light</Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="dark" id="dark" className="bg-white" />
+                            <Label htmlFor="dark">Dark</Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="system" id="system" className="bg-white" />
+                            <Label htmlFor="system">System</Label>
+                        </div>
+                    </RadioGroup>
+                </div>
+                <div className="my-3">
+                    <Label id="default-view">Default View</Label>
+                    <Select aria-labeledby="default-view">
+                        <SelectTrigger className="w-[180px] bg-white mt-2">
+                            <SelectValue placeholder="Select a view" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="servers">Servers</SelectItem>
+                            <SelectItem value="ssh-keys">SSH Keys</SelectItem>
+                        </SelectContent>
+                    </Select>
+                </div>
+                <div className="my-3">
+                    <Label className="mb-3">Table Display Density</Label>
+                    <RadioGroup defaultValue="compact">
+                        <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="compact" id="compact" className="bg-white" />
+                            <Label htmlFor="compact">Compact</Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="comfortable" id="comfortable" className="bg-white" />
+                            <Label htmlFor="comfortable">Comfortable</Label>
+                        </div>
+                    </RadioGroup>
+                </div>
+                <div className="my-3">
+                    <Label id="date-format-preference">Date Format Preference</Label>
+                    <Select aria-labeledby="date-format-preference">
+                        <SelectTrigger className="w-[180px] bg-white mt-2">
+                            <SelectValue placeholder="Select a format" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="MM/DD/YYYY">MM/DD/YYYY</SelectItem>
+                            <SelectItem value="DD/MM/YYYY">DD/MM/YYYY</SelectItem>
+                            <SelectItem value="YYYY-MM-DD">YYYY-MM-DD</SelectItem>
+                        </SelectContent>
+                    </Select>
+                </div>
+            </TabsContent>
             <TabsContent value="server">TODO 4</TabsContent>
             <TabsContent value="backup">TODO 5</TabsContent>
             <TabsContent value="advanced">TODO 6</TabsContent>
