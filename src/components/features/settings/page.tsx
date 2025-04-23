@@ -9,6 +9,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
+import { Checkbox } from "@/components/ui/checkbox"
 
 export default function SettingsPage() {
     return (
@@ -43,7 +44,52 @@ export default function SettingsPage() {
                     <Input id="keep-alive-interval" type="number" className="bg-white mt-2" />
                 </div>
             </TabsContent>
-            <TabsContent value="security">TODO 2</TabsContent>
+            <TabsContent value="security">
+                <div className="my-3">
+                    <Label htmlFor="store-ssh-key-passwords">Store SSH Key Passords (encrypted)</Label>
+                    <Checkbox id="store-ssh-key-passwords" className="bg-white mt-2"></Checkbox>
+                </div>
+                <div className="my-3">
+                    <Label id="auto-logout-timer">Auto-Logout Timer</Label>
+                    <Select aria-labeledby="auto-logout-timer">
+                        <SelectTrigger className="w-[180px] bg-white mt-2">
+                            <SelectValue placeholder="Select a value" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="never">never</SelectItem>
+                            <SelectItem value="1">1 minute</SelectItem>
+                            <SelectItem value="5">5 minutes</SelectItem>
+                            <SelectItem value="10">10 minutes</SelectItem>
+                            <SelectItem value="30">30 minutes</SelectItem>
+                        </SelectContent>
+                    </Select>
+                </div>
+                <div className="my-3">
+                    <Label>Password Complexity Requirements</Label>
+                    <div className="flex items-center space-x-2 mt-2">
+                        <Checkbox id="require-uppercase" className="bg-white" />
+                        <label
+                            htmlFor="require-uppercase"
+                            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                        >
+                            Require Uppercase
+                        </label>
+                    </div>
+                    <div className="flex items-center space-x-2 my-2">
+                        <Checkbox id="require-numbers" className="bg-white" />
+                        <label
+                            htmlFor="require-numbers"
+                            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                        >
+                            Require Numbers
+                        </label>
+                    </div>
+                </div>
+                <div className="my-3">
+                    <Label>Two-Factor Authenticaiton</Label>
+                    Coming soon!
+                </div>
+            </TabsContent>
             <TabsContent value="ui">TODO 3</TabsContent>
             <TabsContent value="server">TODO 4</TabsContent>
             <TabsContent value="backup">TODO 5</TabsContent>
