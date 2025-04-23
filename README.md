@@ -42,7 +42,7 @@ Before installing Syndeos, ensure you have the following installed:
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/saintpickle/syndeos.git
+   git clone https://github.com/righteouswaters/syndeos.git
    cd syndeos
    ```
 
