@@ -1,15 +1,22 @@
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+
 export default function SettingsPage() {
     return (
-        <div className="grid auto-rows-min gap-4 md:grid-cols-3">
-            <div className="aspect-video rounded-xl bg-white text-3xl flex justify-center items-center">
-                <p>Setting 1</p>
-            </div>
-            <div className="aspect-video rounded-xl bg-white text-3xl flex justify-center items-center">
-                <p>Setting 2</p>
-            </div>
-            <div className="aspect-video rounded-xl bg-white text-3xl flex justify-center items-center">
-                <p>Setting 3</p>
-            </div>
-        </div>
+        <Tabs defaultValue="connection" className="w-[400px]">
+            <TabsList>
+                <TabsTrigger value="connection">Connection Settings</TabsTrigger>
+                <TabsTrigger value="security">Security Settings</TabsTrigger>
+                <TabsTrigger value="ui">UI Preferences</TabsTrigger>
+                <TabsTrigger value="server">Server Management</TabsTrigger>
+                <TabsTrigger value="backup">Backup & Restore</TabsTrigger>
+                <TabsTrigger value="advanced">Advanced Settings</TabsTrigger>
+            </TabsList>
+            <TabsContent value="connection">TODO 1</TabsContent>
+            <TabsContent value="security">TODO 2</TabsContent>
+            <TabsContent value="ui">TODO 3</TabsContent>
+            <TabsContent value="server">TODO 4</TabsContent>
+            <TabsContent value="backup">TODO 5</TabsContent>
+            <TabsContent value="advanced">TODO 6</TabsContent>
+        </Tabs>
     );
 }
