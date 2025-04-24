@@ -11,12 +11,12 @@ import { Checkbox } from "@/components/ui/checkbox"
 
 export default function Backup() {
     return (
-        <div>
-            <div className="my-3">
+        <div className="space-y-6 mt-6">
+            <div>
                 <Label htmlFor="database-backup-location">Database Backup Location</Label>
                 <Input id="database-backup-location" className="bg-white mt-2" />
             </div>
-            <div className="my-3">
+            <div>
                 <Label id="auto-backup-frequency">Auto-Backup Frequency</Label>
                 <Select aria-labeledby="auto-backup-frequency">
                     <SelectTrigger className="w-[180px] bg-white mt-2">
@@ -32,7 +32,7 @@ export default function Backup() {
                     </SelectContent>
                 </Select>
             </div>
-            <div className="flex items-center space-x-2 my-3">
+            <div className="flex items-center space-x-2">
                 <Checkbox id="encrypt-backups" className="bg-white" />
                 <label
                     htmlFor="encrypt-backups"
@@ -41,7 +41,7 @@ export default function Backup() {
                     Encrypt Backups
                 </label>
             </div>
-            <div className="my-3">
+            <div>
                 <Label htmlFor="encryption-password">Encryption Password</Label>
                 <Input id="encryption-password" type="password" className="bg-white mt-2" />
             </div>

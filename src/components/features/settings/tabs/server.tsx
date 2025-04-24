@@ -10,8 +10,8 @@ import { Input } from "@/components/ui/input"
 
 export default function Server() {
     return (
-        <div>
-            <div className="my-3">
+        <div className="space-y-6 mt-6">
+            <div>
                 <Label id="auto-refresh-interval">Auto-Refresh Interval</Label>
                 <Select aria-labeledby="auto-refresh-interval">
                     <SelectTrigger className="w-[180px] bg-white mt-2">
@@ -26,7 +26,7 @@ export default function Server() {
                     </SelectContent>
                 </Select>
             </div>
-            <div className="my-3">
+            <div>
                 <Label id="default-server-groups">Default Server Groups</Label>
                 <Select aria-labeledby="default-server-groups">
                     <SelectTrigger className="w-[180px] bg-white mt-2">
@@ -39,7 +39,7 @@ export default function Server() {
                     </SelectContent>
                 </Select>
             </div>
-            <div className="my-3">
+            <div>
                 <Label id="health-check-frequency">Health Check Frequency</Label>
                 <Select aria-labeledby="health-check-frequency">
                     <SelectTrigger className="w-[180px] bg-white mt-2">
@@ -54,7 +54,7 @@ export default function Server() {
                     </SelectContent>
                 </Select>
             </div>
-            <div className="my-5">
+            <div>
                 <Label>Notification Thresholds</Label>
                 <div className="my-3">
                     <Label htmlFor="cpu-usage-alert">CPU Usage Alert (%)</Label>

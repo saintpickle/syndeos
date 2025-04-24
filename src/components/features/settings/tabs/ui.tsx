@@ -10,8 +10,8 @@ import {
 
 export default function UI() {
     return (
-        <div>
-            <div className="my-3">
+        <div className="space-y-6 mt-6">
+            <div>
                 <Label className="mb-3">Theme Selection</Label>
                 <RadioGroup defaultValue="light">
                     <div className="flex items-center space-x-2">
@@ -28,7 +28,7 @@ export default function UI() {
                     </div>
                 </RadioGroup>
             </div>
-            <div className="my-3">
+            <div>
                 <Label id="default-view">Default View</Label>
                 <Select aria-labeledby="default-view">
                     <SelectTrigger className="w-[180px] bg-white mt-2">
@@ -40,7 +40,7 @@ export default function UI() {
                     </SelectContent>
                 </Select>
             </div>
-            <div className="my-3">
+            <div>
                 <Label className="mb-3">Table Display Density</Label>
                 <RadioGroup defaultValue="compact">
                     <div className="flex items-center space-x-2">
@@ -53,7 +53,7 @@ export default function UI() {
                     </div>
                 </RadioGroup>
             </div>
-            <div className="my-3">
+            <div>
                 <Label id="date-format-preference">Date Format Preference</Label>
                 <Select aria-labeledby="date-format-preference">
                     <SelectTrigger className="w-[180px] bg-white mt-2">

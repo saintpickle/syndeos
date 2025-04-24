@@ -10,12 +10,12 @@ import {
 
 export default function Connection() {
     return (
-        <div>
-            <div className="my-3">
+        <div className="space-y-6 mt-6">
+            <div>
                 <Label htmlFor="ssh-connection-timeout">SSH Connection Timeout (s)</Label>
                 <Input id="ssh-connection-timeout" type="number" className="bg-white mt-2" />
             </div>
-            <div className="my-3">
+            <div>
                 <Label id="connection-retry-attempts">Connection Retry Attempts</Label>
                 <Select aria-labeledby="connection-retry-attempts">
                     <SelectTrigger className="w-[180px] bg-white mt-2">
@@ -27,7 +27,7 @@ export default function Connection() {
                     </SelectContent>
                 </Select>
             </div>
-            <div className="my-3">
+            <div>
                 <Label htmlFor="keep-alive-interval">Keep-Alive Interval (s)</Label>
                 <Input id="keep-alive-interval" type="number" className="bg-white mt-2" />
             </div>

@@ -10,12 +10,12 @@ import {
 
 export default function Security() {
     return (
-        <div>
-            <div className="my-3">
+        <div className="space-y-6 mt-6">
+            <div>
                 <Label htmlFor="store-ssh-key-passwords">Store SSH Key Passords (encrypted)</Label>
                 <Checkbox id="store-ssh-key-passwords" className="bg-white mt-2"></Checkbox>
             </div>
-            <div className="my-3">
+            <div>
                 <Label id="auto-logout-timer">Auto-Logout Timer</Label>
                 <Select aria-labeledby="auto-logout-timer">
                     <SelectTrigger className="w-[180px] bg-white mt-2">
@@ -30,9 +30,9 @@ export default function Security() {
                     </SelectContent>
                 </Select>
             </div>
-            <div className="my-3">
+            <div className="space-y-2">
                 <Label>Password Complexity Requirements</Label>
-                <div className="flex items-center space-x-2 mt-2">
+                <div className="flex items-center space-x-2">
                     <Checkbox id="require-uppercase" className="bg-white" />
                     <label
                         htmlFor="require-uppercase"
@@ -41,7 +41,7 @@ export default function Security() {
                         Require Uppercase
                     </label>
                 </div>
-                <div className="flex items-center space-x-2 my-2">
+                <div className="flex items-center space-x-2">
                     <Checkbox id="require-numbers" className="bg-white" />
                     <label
                         htmlFor="require-numbers"
@@ -51,7 +51,7 @@ export default function Security() {
                     </label>
                 </div>
             </div>
-            <div className="my-3">
+            <div>
                 <Label>Two-Factor Authenticaiton</Label>
                 Coming soon!
             </div>

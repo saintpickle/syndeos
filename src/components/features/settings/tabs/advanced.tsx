@@ -9,8 +9,8 @@ import {
 
 export default function Advanced() {
     return (
-        <div>
-            <div className="my-3">
+        <div className="space-y-6 mt-6">
+            <div>
                 <Label id="log-level">Log Level</Label>
                 <Select aria-labeledby="log-level">
                     <SelectTrigger className="w-[180px] bg-white mt-2">
@@ -24,15 +24,15 @@ export default function Advanced() {
                     </SelectContent>
                 </Select>
             </div>
-            <div className="my-3">
+            <div>
                 <Label>Proxy Configuration</Label>
                 Coming Soon!
             </div>
-            <div className="my-3">
+            <div>
                 <Label>Custom Terminal Configuration</Label>
                 Coming Soon!
             </div>
-            <div className="my-3">
+            <div>
                 <Label>Custom Script Paths</Label>
                 Coming Soon!
             </div>
