@@ -12,7 +12,7 @@ export default function Advanced() {
         <div className="space-y-6 mt-6">
             <div>
                 <Label id="log-level">Log Level</Label>
-                <Select aria-labeledby="log-level">
+                <Select aria-labeledby="log-level" disabled>
                     <SelectTrigger className="w-[180px] bg-white mt-2">
                         <SelectValue placeholder="Select a level" />
                     </SelectTrigger>

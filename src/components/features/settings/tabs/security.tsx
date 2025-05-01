@@ -13,11 +13,11 @@ export default function Security() {
         <div className="space-y-6 mt-6">
             <div>
                 <Label htmlFor="store-ssh-key-passwords">Store SSH Key Passords (encrypted)</Label>
-                <Checkbox id="store-ssh-key-passwords" className="bg-white mt-2"></Checkbox>
+                <Checkbox id="store-ssh-key-passwords" className="bg-white mt-2" disabled />
             </div>
             <div>
                 <Label id="auto-logout-timer">Auto-Logout Timer</Label>
-                <Select aria-labeledby="auto-logout-timer">
+                <Select aria-labeledby="auto-logout-timer" disabled>
                     <SelectTrigger className="w-[180px] bg-white mt-2">
                         <SelectValue placeholder="Select a value" />
                     </SelectTrigger>
@@ -33,7 +33,7 @@ export default function Security() {
             <div className="space-y-2">
                 <Label>Password Complexity Requirements</Label>
                 <div className="flex items-center space-x-2">
-                    <Checkbox id="require-uppercase" className="bg-white" />
+                    <Checkbox id="require-uppercase" className="bg-white" disabled />
                     <label
                         htmlFor="require-uppercase"
                         className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
@@ -42,7 +42,7 @@ export default function Security() {
                     </label>
                 </div>
                 <div className="flex items-center space-x-2">
-                    <Checkbox id="require-numbers" className="bg-white" />
+                    <Checkbox id="require-numbers" className="bg-white" disabled />
                     <label
                         htmlFor="require-numbers"
                         className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"

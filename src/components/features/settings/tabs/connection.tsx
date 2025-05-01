@@ -13,11 +13,11 @@ export default function Connection() {
         <div className="space-y-6 mt-6">
             <div>
                 <Label htmlFor="ssh-connection-timeout">SSH Connection Timeout (s)</Label>
-                <Input id="ssh-connection-timeout" type="number" className="bg-white mt-2" />
+                <Input id="ssh-connection-timeout" type="number" className="bg-white mt-2" disabled />
             </div>
             <div>
                 <Label id="connection-retry-attempts">Connection Retry Attempts</Label>
-                <Select aria-labeledby="connection-retry-attempts">
+                <Select aria-labeledby="connection-retry-attempts" disabled>
                     <SelectTrigger className="w-[180px] bg-white mt-2">
                         <SelectValue placeholder="Select a value" />
                     </SelectTrigger>
@@ -29,7 +29,7 @@ export default function Connection() {
             </div>
             <div>
                 <Label htmlFor="keep-alive-interval">Keep-Alive Interval (s)</Label>
-                <Input id="keep-alive-interval" type="number" className="bg-white mt-2" />
+                <Input id="keep-alive-interval" type="number" className="bg-white mt-2" disabled />
             </div>
         </div>
     )

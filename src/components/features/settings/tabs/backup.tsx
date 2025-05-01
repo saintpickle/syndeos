@@ -14,11 +14,11 @@ export default function Backup() {
         <div className="space-y-6 mt-6">
             <div>
                 <Label htmlFor="database-backup-location">Database Backup Location</Label>
-                <Input id="database-backup-location" className="bg-white mt-2" />
+                <Input id="database-backup-location" className="bg-white mt-2" disabled />
             </div>
             <div>
                 <Label id="auto-backup-frequency">Auto-Backup Frequency</Label>
-                <Select aria-labeledby="auto-backup-frequency">
+                <Select aria-labeledby="auto-backup-frequency" disabled>
                     <SelectTrigger className="w-[180px] bg-white mt-2">
                         <SelectValue placeholder="Select a frequency" />
                     </SelectTrigger>
@@ -33,7 +33,7 @@ export default function Backup() {
                 </Select>
             </div>
             <div className="flex items-center space-x-2">
-                <Checkbox id="encrypt-backups" className="bg-white" />
+                <Checkbox id="encrypt-backups" className="bg-white" disabled />
                 <label
                     htmlFor="encrypt-backups"
                     className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
@@ -43,7 +43,7 @@ export default function Backup() {
             </div>
             <div>
                 <Label htmlFor="encryption-password">Encryption Password</Label>
-                <Input id="encryption-password" type="password" className="bg-white mt-2" />
+                <Input id="encryption-password" type="password" className="bg-white mt-2" disabled />
             </div>
         </div>
     )
