@@ -8,25 +8,14 @@ import {
     SelectValue,
 } from "@/components/ui/select"
 
+import { ModeToggle } from "./../mode-toggle"
+
 export default function UI() {
     return (
         <div className="space-y-6 mt-6">
             <div>
                 <Label className="mb-3">Theme Selection</Label>
-                <RadioGroup defaultValue="light" disabled>
-                    <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="light" id="light" className="bg-white" />
-                        <Label htmlFor="light">Light</Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="dark" id="dark" className="bg-white" />
-                        <Label htmlFor="dark">Dark</Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="system" id="system" className="bg-white" />
-                        <Label htmlFor="system">System</Label>
-                    </div>
-                </RadioGroup>
+                <ModeToggle />
             </div>
             <div>
                 <Label id="default-view">Default View</Label>
