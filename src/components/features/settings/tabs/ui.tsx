@@ -30,7 +30,7 @@ export default function UI() {
             </div>
             <div>
                 <Label id="default-view">Default View</Label>
-                <Select aria-labeledby="default-view" disabled>
+                <Select aria-labeledby="default-view" onValueChange={(value) => localStorage.setItem('default-view', value)} defaultValue={localStorage.getItem('default-view') ?? undefined}>
                     <SelectTrigger className="w-[180px] bg-white mt-2">
                         <SelectValue placeholder="Select a view" />
                     </SelectTrigger>
