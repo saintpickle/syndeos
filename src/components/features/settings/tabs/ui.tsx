@@ -36,7 +36,7 @@ export default function UI() {
                     </SelectTrigger>
                     <SelectContent>
                         <SelectItem value="servers">Servers</SelectItem>
-                        <SelectItem value="ssh-keys">SSH Keys</SelectItem>
+                        <SelectItem value="keys">SSH Keys</SelectItem>
                     </SelectContent>
                 </Select>
             </div>

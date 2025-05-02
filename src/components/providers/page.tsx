@@ -45,7 +45,12 @@ const PageContext = createContext<PageContextType | undefined>(undefined);
 
 // Provider component
 export function PageProvider({ children }: { children: React.ReactNode }) {
-    const [currentPage, setCurrentPage] = useState<PageKey>('servers');
+    const [currentPage, setCurrentPage] = useState<PageKey>(() => {
+        // Retrieve the default page from local storage
+        const storedPage = localStorage.getItem('default-view') as PageKey | null;
+        // Fallback to 'servers' if no valid page is found
+        return storedPage && PAGES[storedPage] ? storedPage : 'servers';
+    });
 
     const pageTitle = PAGES[currentPage].title;
 
