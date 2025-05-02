@@ -1,4 +1,5 @@
 import { Label } from "@/components/ui/label"
+import {ThemeToggler} from "@/components/ui/theme-toggler.tsx";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import {
     Select,
@@ -6,31 +7,18 @@ import {
     SelectItem,
     SelectTrigger,
     SelectValue,
-} from "@/components/ui/select"
+} from "@/components/ui/select";
 
 export default function UI() {
     return (
         <div className="space-y-6 mt-6">
-            <div>
-                <Label className="mb-3">Theme Selection</Label>
-                <RadioGroup defaultValue="light" disabled>
-                    <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="light" id="light" className="bg-white" />
-                        <Label htmlFor="light">Light</Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="dark" id="dark" className="bg-white" />
-                        <Label htmlFor="dark">Dark</Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="system" id="system" className="bg-white" />
-                        <Label htmlFor="system">System</Label>
-                    </div>
-                </RadioGroup>
+            <div className="space-y-3">
+                <Label>Toggle Theme</Label>
+                <ThemeToggler />
             </div>
             <div>
                 <Label id="default-view">Default View</Label>
-                <Select aria-labeledby="default-view" disabled>
+                <Select disabled>
                     <SelectTrigger className="w-[180px] bg-white mt-2">
                         <SelectValue placeholder="Select a view" />
                     </SelectTrigger>
@@ -55,7 +43,7 @@ export default function UI() {
             </div>
             <div>
                 <Label id="date-format-preference">Date Format Preference</Label>
-                <Select aria-labeledby="date-format-preference" disabled>
+                <Select disabled>
                     <SelectTrigger className="w-[180px] bg-white mt-2">
                         <SelectValue placeholder="Select a format" />
                     </SelectTrigger>
