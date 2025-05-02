@@ -7,7 +7,7 @@ export default function MainContent() {
 
     return (
         <SidebarInset>
-            <div className="flex flex-1 flex-col gap-4 p-4 bg-slate-200">
+            <div className="flex flex-1 flex-col gap-4 p-4 bg-background">
                 <h1 className="text-2xl font-semibold">{pageTitle}</h1>
                 <PageRenderer />
             </div>
