@@ -34,8 +34,9 @@ export default function UI() {
                 <Label id="default-view">Default View</Label>
                 <Select
                     aria-labeledby="default-view"
+                    value={defaultView} // Bind the selected value to the state, ensuring the dropdown reflects the current default view.
                     onValueChange={(value) => invoke("update_setting", { key: "default-view", value })}
-                    defaultValue={defaultView}
+                    
                 >
                     <SelectTrigger className="w-[180px] bg-white mt-2">
                         <SelectValue placeholder="Select a view" />
