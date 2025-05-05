@@ -1,9 +1,11 @@
-import {invoke} from "@tauri-apps/api/core";
-import {useEffect} from "react";
-import {SidebarProvider} from "@/components/ui/sidebar.tsx";
+// src/App.tsx
+import { invoke } from "@tauri-apps/api/core";
+import { useEffect } from "react";
+import { SidebarProvider } from "@/components/ui/sidebar.tsx";
 import MainContent from "@/components/main-content.tsx";
-import {AppSidebar} from "@/components/app-sidebar.tsx";
-import {PageProvider} from "@/components/providers/page.tsx";
+import { AppSidebar } from "@/components/app-sidebar.tsx";
+import { PageProvider } from "@/components/providers/page.tsx";
+import { ThemeProvider } from "@/components/providers/theme.tsx";
 import "./App.css";
 
 function App() {
@@ -14,14 +16,14 @@ function App() {
     }, []);
 
     return (
-        <main>
+        <ThemeProvider>
             <PageProvider>
                 <SidebarProvider>
-                    <AppSidebar/>
-                    <MainContent/>
+                    <AppSidebar />
+                    <MainContent />
                 </SidebarProvider>
             </PageProvider>
-        </main>
+        </ThemeProvider>
     );
 }
 
