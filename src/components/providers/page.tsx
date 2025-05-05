@@ -1,8 +1,9 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 import ServersPage from '@/components/features/servers/page';
 import ServerPage from '@/components/features/server/page';
 import SettingsPage from '@/components/features/settings/page';
 import KeysPage from '@/components/features/ssh-keys/page';
+import { invoke } from '@tauri-apps/api/core';
 
 // Define page types
 type PageKey = 'servers' | 'server' | 'settings' | 'keys';
@@ -45,12 +46,22 @@ const PageContext = createContext<PageContextType | undefined>(undefined);
 
 // Provider component
 export function PageProvider({ children }: { children: React.ReactNode }) {
-    const [currentPage, setCurrentPage] = useState<PageKey>(() => {
-        // Retrieve the default page from local storage
-        const storedPage = localStorage.getItem('default-view') as PageKey | null;
-        // Fallback to 'servers' if no valid page is found
-        return storedPage && PAGES[storedPage] ? storedPage : 'servers';
-    });
+    const [currentPage, setCurrentPage] = useState<PageKey>('servers'); // Default to 'servers'
+
+    useEffect(() => {
+        async function fetchDefaultPage() {
+            try {
+                const storedPage = await invoke<string>('get_setting', { key: 'default-view' });
+                if (storedPage && PAGES[storedPage as PageKey]) {
+                    setCurrentPage(storedPage as PageKey);
+                }
+            } catch (error) {
+                console.error('Failed to fetch default page:', error);
+            }
+        }
+
+        fetchDefaultPage();
+    }, []);
 
     const pageTitle = PAGES[currentPage].title;
 

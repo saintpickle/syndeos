@@ -1,5 +1,6 @@
+import { useEffect, useState } from "react";
 import { Label } from "@/components/ui/label"
-import {ThemeToggler} from "@/components/ui/theme-toggler.tsx";
+import { ThemeToggler } from "@/components/ui/theme-toggler.tsx";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import {
     Select,
@@ -8,8 +9,21 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
+import { invoke } from "@tauri-apps/api/core";
 
 export default function UI() {
+    const [defaultView, setDefaultView] = useState<string>("");
+
+    useEffect(() => {
+        // Fetch the default view setting from the backend
+        invoke<string>("get_setting", { key: "default-view" })
+            .then((value) => {
+                //console.log("Default view fetched:", value);
+                setDefaultView(value);
+            })
+            .catch((error) => console.error("Failed to fetch default view:", error));
+    }, []);
+
     return (
         <div className="space-y-6 mt-6">
             <div className="space-y-3">
@@ -18,7 +32,11 @@ export default function UI() {
             </div>
             <div>
                 <Label id="default-view">Default View</Label>
-                <Select aria-labeledby="default-view" onValueChange={(value) => localStorage.setItem('default-view', value)} defaultValue={localStorage.getItem('default-view') ?? undefined}>
+                <Select
+                    aria-labeledby="default-view"
+                    onValueChange={(value) => invoke("update_setting", { key: "default-view", value })}
+                    defaultValue={defaultView}
+                >
                     <SelectTrigger className="w-[180px] bg-white mt-2">
                         <SelectValue placeholder="Select a view" />
                     </SelectTrigger>
