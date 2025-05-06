@@ -17,7 +17,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     useEffect(() => {
         const loadTheme = async () => {
             try {
-                const savedTheme = await invoke<string>('get_setting', { key: 'theme' });
+                const savedTheme = await invoke<string>('get_setting', { key: 'ui/theme' });
                 if (savedTheme && ['light', 'dark', 'system'].includes(savedTheme)) {
                     setTheme(savedTheme as Theme);
                 }
@@ -35,7 +35,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     const updateTheme = async (newTheme: Theme) => {
         setTheme(newTheme);
         try {
-            await invoke('update_setting', { key: 'theme', value: newTheme });
+            await invoke('update_setting', { key: 'ui/theme', value: newTheme });
         } catch (error) {
             console.error('Failed to save theme setting:', error);
         }

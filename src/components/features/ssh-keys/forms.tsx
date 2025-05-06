@@ -129,7 +129,7 @@ export function SshKeyForms({onSuccess}: AddKeyFormProps) {
             <DialogTrigger asChild>
                 <Button>Add SSH Key</Button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px]">
+            <DialogContent className="sm:max-w-[425px] max-h-[95vh] overflow-y-auto scrollbar-hide">
                 <DialogHeader>
                     <DialogTitle>Manage SSH Keys</DialogTitle>
                 </DialogHeader>
