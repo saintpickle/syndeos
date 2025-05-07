@@ -72,8 +72,8 @@ pub fn init_ssh_keys(app_handle: AppHandle) -> Result<Vec<SshKey>, String> {
             path: path_str,
             password: None,
             is_default: false,
-            created_at: now.clone(),
-            updated_at: now,
+            created_at: Option::from(now.clone()),
+            updated_at: Option::from(now),
         });
     }
 
