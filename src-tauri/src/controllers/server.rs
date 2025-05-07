@@ -7,8 +7,9 @@ use crate::models::Server;
 pub fn add_server(app_handle: AppHandle, server: Server) -> Result<i64, String> {
     let conn = get(&app_handle)?;
 
-    // Use current time for timestamps
     let now = chrono::Local::now().to_rfc3339();
+    let created_at = server.created_at.unwrap_or(now.clone());
+    let updated_at = server.updated_at.unwrap_or(now.clone());
 
     conn.execute(
         "INSERT INTO servers (name, hostname, ip_address, port, username, ssh_key_id, notes, created_at, updated_at)
@@ -21,8 +22,8 @@ pub fn add_server(app_handle: AppHandle, server: Server) -> Result<i64, String> 
             server.username,
             server.ssh_key_id,
             server.notes,
-            now,
-            now
+            created_at,
+            updated_at
         ],
     ).map_err(|e| e.to_string())?;
 
@@ -91,6 +92,7 @@ pub fn update_server(app_handle: AppHandle, server: Server) -> Result<(), String
 
     // Use current time for updated_at timestamp
     let now = chrono::Local::now().to_rfc3339();
+    let updated_at = server.updated_at.unwrap_or(now.clone());
 
     conn.execute(
         "UPDATE servers SET
@@ -111,7 +113,7 @@ pub fn update_server(app_handle: AppHandle, server: Server) -> Result<(), String
             server.username,
             server.ssh_key_id,
             server.notes,
-            now,
+            updated_at,
             id
         ],
     ).map_err(|e| e.to_string())?;

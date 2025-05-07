@@ -51,6 +51,7 @@ pub fn run() {
             setting::get_setting,
             setting::get_settings,
             setting::update_setting, 
+            setting::reset_app, 
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

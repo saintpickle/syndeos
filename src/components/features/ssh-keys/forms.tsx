@@ -30,7 +30,7 @@ const generateKeySchema = z.object({
         .min(8, "Password must be at least 8 characters")
         .max(32, "Password must be less than 32 characters")
         .optional(),
-    isDefault: z.boolean().optional()
+    isDefault: z.boolean()
 });
 
 const addKeySchema = z.object({
@@ -40,7 +40,7 @@ const addKeySchema = z.object({
         .min(8, "Password must be at least 8 characters")
         .max(32, "Password must be less than 32 characters")
         .optional(),
-    isDefault: z.boolean().optional(),
+    isDefault: z.boolean(),
 });
 
 type AddKeyFormProps = {

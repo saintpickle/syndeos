@@ -10,8 +10,8 @@ pub struct Server {
     pub username: String,
     pub ssh_key_id: Option<i64>,
     pub notes: Option<String>,
-    pub created_at: String,
-    pub updated_at: String,
+    pub created_at: Option<String>,
+    pub updated_at: Option<String>,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -28,6 +28,6 @@ pub struct SshKey {
     pub path: String,
     pub password: Option<String>,
     pub is_default: bool,
-    pub created_at: String,
-    pub updated_at: String,
+    pub created_at: Option<String>,
+    pub updated_at: Option<String>,
 }

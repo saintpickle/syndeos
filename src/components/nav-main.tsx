@@ -7,8 +7,7 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
 import { usePageContext } from "@/components/providers/page";
-import { ServerForms } from "@/components/features/server/forms.tsx";
-import { invoke } from "@tauri-apps/api/core";
+import { AddServerForm } from "@/components/features/server/forms.tsx";
 
 export function NavMain({items}: {
   items: {
@@ -32,25 +31,13 @@ export function NavMain({items}: {
       setCurrentPage(pageKey);
     }
   };
-  
-  const handleAddServer = async (data: any) => {
-    try {
-      await invoke('add_server', { ...data });
-      // You might want to refresh the servers list or show a notification
-    } catch (error) {
-      console.error('Failed to add server:', error);
-    }
-  };
 
   return (
     <SidebarGroup>
       <SidebarGroupContent className="flex flex-col gap-2">
         <SidebarMenu>
           <SidebarMenuItem className="flex items-center gap-2">
-            <ServerForms 
-              mode="add"
-              onSubmit={handleAddServer}
-            >
+            <AddServerForm>
               <SidebarMenuButton
                 tooltip="Add Server"
                 className="bg-primary text-primary-foreground cursor-pointer hover:bg-primary/90 hover:text-primary-foreground active:bg-primary/90 active:text-primary-foreground min-w-8 duration-200 ease-linear"
@@ -59,7 +46,7 @@ export function NavMain({items}: {
 
                 Add Server
               </SidebarMenuButton>
-            </ServerForms>
+            </AddServerForm>
           </SidebarMenuItem>
         </SidebarMenu>
         <SidebarMenu>
