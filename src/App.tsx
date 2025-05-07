@@ -1,4 +1,3 @@
-// src/App.tsx
 import { invoke } from "@tauri-apps/api/core";
 import { useEffect } from "react";
 import { SidebarProvider } from "@/components/ui/sidebar.tsx";
