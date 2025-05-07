@@ -1,5 +1,6 @@
+use std::fs;
 use rusqlite::params;
-use tauri::AppHandle;
+use tauri::{AppHandle, Manager};
 use crate::database::connection::get;
 use crate::models::Setting;
 
@@ -76,6 +77,27 @@ pub fn update_setting(app_handle: AppHandle, key: String, value: String) -> Resu
         "INSERT OR REPLACE INTO settings (key, value) VALUES (?1, ?2)",
         params![key, value],
     ).map_err(|e| e.to_string())?;
+
+    Ok(())
+}
+
+#[tauri::command]
+pub fn reset_app(app_handle: AppHandle) -> Result<(), String> {
+    let app_dir = app_handle.path().app_data_dir().map_err(|e| e.to_string())?;
+    let db_path = app_dir.join("syndeos.db");
+
+    // Check if the file exists
+    if db_path.exists() {
+        // Delete the database file
+        fs::remove_file(&db_path).map_err(|e| format!("Failed to delete database: {}", e))?;
+    }
+
+    // Schedule a restart of the application after a short delay
+    // This gives the frontend time to receive the response
+    std::thread::spawn(move || {
+        std::thread::sleep(std::time::Duration::from_millis(500));
+        app_handle.restart();
+    });
 
     Ok(())
 }
