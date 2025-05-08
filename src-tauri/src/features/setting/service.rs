@@ -1,44 +1,37 @@
+use std;
 use std::fs;
 use rusqlite::params;
+use rusqlite::Connection;
 use tauri::{AppHandle, Manager};
-use crate::database::connection::get;
-use crate::models::Setting;
+use super::model::Setting;
 
-#[tauri::command]
-pub fn init_default_settings(app_handle: AppHandle) -> Result<(), String> {
-    let conn = get(&app_handle)?;
-
-    // Check if settings table is empty
+pub fn init_default_settings(conn: Connection) -> Result<(), String> {
     let mut stmt = conn.prepare("SELECT COUNT(*) FROM settings")
         .map_err(|e| e.to_string())?;
     let count: i64 = stmt.query_row([], |row| row.get(0))
         .map_err(|e| e.to_string())?;
 
     if count == 0 {
-        // Insert default settings
         conn.execute(
             "INSERT INTO settings (key, value) VALUES (?1, ?2)",
-            params!["theme", "system"],
+            params!["ui/theme", "system"],
         ).map_err(|e| e.to_string())?;
 
         conn.execute(
             "INSERT INTO settings (key, value) VALUES (?1, ?2)",
-            params!["ssh_timeout", "30"],
+            params!["connection/ssh_timeout", "30"],
         ).map_err(|e| e.to_string())?;
 
         conn.execute(
             "INSERT INTO settings (key, value) VALUES (?1, ?2)",
-            params!["default_port", "22"],
+            params!["server/default_port", "22"],
         ).map_err(|e| e.to_string())?;
     }
 
     Ok(())
 }
 
-#[tauri::command]
-pub fn get_setting(app_handle: AppHandle, key: String) -> Result<String, String> {
-    let conn = get(&app_handle)?;
-
+pub fn get_setting(conn: Connection, key: String) -> Result<String, String> {
     conn.query_row(
         "SELECT value FROM settings WHERE key = ?1",
         params![key],
@@ -46,10 +39,7 @@ pub fn get_setting(app_handle: AppHandle, key: String) -> Result<String, String>
     ).map_err(|e| e.to_string())
 }
 
-#[tauri::command]
-pub fn get_settings(app_handle: AppHandle) -> Result<Vec<Setting>, String> {
-    let conn = get(&app_handle)?;
-
+pub fn get_settings(conn: Connection) -> Result<Vec<Setting>, String> {
     let mut stmt = conn.prepare("SELECT id, key, value FROM settings")
         .map_err(|e| e.to_string())?;
 
@@ -69,10 +59,7 @@ pub fn get_settings(app_handle: AppHandle) -> Result<Vec<Setting>, String> {
     Ok(settings)
 }
 
-#[tauri::command]
-pub fn update_setting(app_handle: AppHandle, key: String, value: String) -> Result<(), String> {
-    let conn = get(&app_handle)?;
-
+pub fn update_setting(conn: Connection, key: String, value: String) -> Result<(), String> {
     conn.execute(
         "INSERT OR REPLACE INTO settings (key, value) VALUES (?1, ?2)",
         params![key, value],
@@ -81,7 +68,6 @@ pub fn update_setting(app_handle: AppHandle, key: String, value: String) -> Resu
     Ok(())
 }
 
-#[tauri::command]
 pub fn reset_app(app_handle: AppHandle) -> Result<(), String> {
     let app_dir = app_handle.path().app_data_dir().map_err(|e| e.to_string())?;
     let db_path = app_dir.join("syndeos.db");

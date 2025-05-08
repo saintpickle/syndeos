@@ -23,6 +23,7 @@ import {
 } from "@/components/ui/form";
 import {Input} from "@/components/ui/input";
 import {Checkbox} from "@/components/ui/checkbox";
+import {SshKey} from "@/types.ts";
 
 const generateKeySchema = z.object({
     name: z.string().min(1, "Name is required"),
@@ -78,26 +79,19 @@ export function SshKeyForms({onSuccess}: AddKeyFormProps) {
             return;
         }
 
-        invoke("generate_ssh_key", {
+        const sshKeyData = {
             name: values.name,
-            password: values.password ?? ""
-        })
-            .then((keyPath) => {
-                if (values.isDefault) {
-                    // If the user wants this to be the default key, set it
-                    invoke("get_ssh_keys")
-                        .then((keys: any) => {
-                            const newKey = keys.find((k: any) => k.path === keyPath);
-                            if (newKey && newKey.id) {
-                                invoke("set_default_ssh_key", {id: newKey.id})
-                                    .catch(() => console.log("Error in setting key as the default."));
-                            }
-                        })
-                        .catch(error => console.log(error));
+            password: values.password ?? "",
+            isDefault: values.isDefault,
+        };
+
+        invoke<SshKey>("generate_ssh_key", sshKeyData)
+            .then((ssh_key) => {
+                if (ssh_key?.id) {
+                    setOpen(false);
+                    generateKeyForm.reset();
+                    onSuccess();
                 }
-                setOpen(false);
-                generateKeyForm.reset();
-                onSuccess();
             })
             .catch((error) => console.log(error));
     }
@@ -110,16 +104,18 @@ export function SshKeyForms({onSuccess}: AddKeyFormProps) {
             return;
         }
 
-        invoke("add_ssh_key", {
+        invoke<SshKey>("add_ssh_key", {
             name: values.name,
             path: values.path,
             password: values.password ?? "",
             isDefault: values.isDefault,
         })
-            .then(() => {
-                setOpen(false);
-                addKeyForm.reset();
-                onSuccess();
+            .then((ssh_key) => {
+                if (ssh_key?.id) {
+                    setOpen(false);
+                    addKeyForm.reset();
+                    onSuccess();
+                }
             })
             .catch((error) => console.log(error));
     }
