@@ -1,4 +1,3 @@
-use rusqlite::Connection;
 use super::service;
 use tauri::AppHandle;
 use super::model::Server;
