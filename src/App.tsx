@@ -4,6 +4,7 @@ import { SidebarProvider } from "@/components/ui/sidebar.tsx";
 import MainContent from "@/components/main-content.tsx";
 import { AppSidebar } from "@/components/app-sidebar.tsx";
 import { PageProvider } from "@/components/providers/page.tsx";
+import { ServerProvider } from "@/components/providers/server.tsx";
 import { ThemeProvider } from "@/components/providers/theme.tsx";
 import "./App.css";
 
@@ -17,10 +18,12 @@ function App() {
     return (
         <ThemeProvider>
             <PageProvider>
-                <SidebarProvider>
-                    <AppSidebar />
-                    <MainContent />
-                </SidebarProvider>
+                <ServerProvider>
+                    <SidebarProvider>
+                        <AppSidebar />
+                        <MainContent />
+                    </SidebarProvider>
+                </ServerProvider>
             </PageProvider>
         </ThemeProvider>
     );

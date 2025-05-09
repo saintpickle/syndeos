@@ -1,27 +1,20 @@
-mod database;
-mod models;
-mod controllers;
+mod common;
+mod features;
 
 use tauri::AppHandle;
-use database::connection as conn;
-
-use controllers::{
-    ssh_key,
-    server,
-    setting,
-};
+use common::database::connection;
 
 #[tauri::command]
 fn init_app(app_handle: AppHandle) -> Result<String, String> {
-    let db_result = conn::init_database(app_handle.clone())?;
+    let db_result = connection::init_database(app_handle.clone())?;
 
     println!("Tauri SQLite Database Initialization Successful!");
 
-    setting::init_default_settings(app_handle.clone())?;
+    features::setting::init_default_settings(app_handle.clone())?;
 
     println!("Tauri Settings Initialization Successful!");
 
-    ssh_key::init_ssh_keys(app_handle.clone())?;
+    features::ssh_key::init_ssh_keys(app_handle.clone())?;
 
     println!("Tauri SSH Keys Initialization Successful!");
 
@@ -35,23 +28,23 @@ pub fn run() {
         .invoke_handler(tauri::generate_handler![
             init_app,
 
-            server::add_server,
-            server::get_server,
-            server::update_server,
-            server::delete_server,
-            server::get_servers,
+            features::server::add_server,
+            features::server::get_server,
+            features::server::update_server,
+            features::server::delete_server,
+            features::server::get_servers,
 
-            ssh_key::add_ssh_key,
-            ssh_key::delete_ssh_key,
-            ssh_key::get_ssh_key,
-            ssh_key::get_ssh_keys,
-            ssh_key::set_default_ssh_key,
-            ssh_key::generate_ssh_key,
+            features::ssh_key::add_ssh_key,
+            features::ssh_key::delete_ssh_key,
+            features::ssh_key::get_ssh_key,
+            features::ssh_key::get_ssh_keys,
+            features::ssh_key::set_default_ssh_key,
+            features::ssh_key::generate_ssh_key,
 
-            setting::get_setting,
-            setting::get_settings,
-            setting::update_setting, 
-            setting::reset_app, 
+            features::setting::get_setting,
+            features::setting::get_settings,
+            features::setting::update_setting, 
+            features::setting::reset_app, 
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

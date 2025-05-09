@@ -1,12 +1,8 @@
-use tauri::AppHandle;
-use rusqlite::params;
-use crate::database::connection::get;
-use crate::models::Server;
+use rusqlite::{params, Connection};
+use super::model::Server;
+use super::service;
 
-#[tauri::command]
-pub fn add_server(app_handle: AppHandle, server: Server) -> Result<i64, String> {
-    let conn = get(&app_handle)?;
-
+pub fn add_server(conn: &Connection, server: Server) -> Result<Server, String> {
     let now = chrono::Local::now().to_rfc3339();
     let created_at = server.created_at.unwrap_or(now.clone());
     let updated_at = server.updated_at.unwrap_or(now.clone());
@@ -27,13 +23,10 @@ pub fn add_server(app_handle: AppHandle, server: Server) -> Result<i64, String> 
         ],
     ).map_err(|e| e.to_string())?;
 
-    Ok(conn.last_insert_rowid())
+    service::get_server(&conn, conn.last_insert_rowid())
 }
 
-#[tauri::command]
-pub fn get_server(app_handle: AppHandle, id: i64) -> Result<Server, String> {
-    let conn = get(&app_handle)?;
-
+pub fn get_server(conn: &Connection, id: i64) -> Result<Server, String> {
     conn.query_row(
         "SELECT id, name, hostname, ip_address, port, username, ssh_key_id, notes, created_at, updated_at
          FROM servers WHERE id = ?1",
@@ -53,10 +46,7 @@ pub fn get_server(app_handle: AppHandle, id: i64) -> Result<Server, String> {
     ).map_err(|e| e.to_string())
 }
 
-#[tauri::command]
-pub fn get_servers(app_handle: AppHandle) -> Result<Vec<Server>, String> {
-    let conn = get(&app_handle)?;
-
+pub fn get_servers(conn: &Connection) -> Result<Vec<Server>, String> {
     let mut stmt = conn.prepare("
         SELECT id, name, hostname, ip_address, port, username, ssh_key_id, notes, created_at, updated_at
         FROM servers
@@ -85,12 +75,9 @@ pub fn get_servers(app_handle: AppHandle) -> Result<Vec<Server>, String> {
     Ok(servers)
 }
 
-#[tauri::command]
-pub fn update_server(app_handle: AppHandle, server: Server) -> Result<(), String> {
-    let conn = get(&app_handle)?;
+pub fn update_server(conn: &Connection, server: Server) -> Result<(), String> {
     let id = server.id.ok_or("Server ID is required for update")?;
 
-    // Use current time for updated_at timestamp
     let now = chrono::Local::now().to_rfc3339();
     let updated_at = server.updated_at.unwrap_or(now.clone());
 
@@ -121,10 +108,7 @@ pub fn update_server(app_handle: AppHandle, server: Server) -> Result<(), String
     Ok(())
 }
 
-#[tauri::command]
-pub fn delete_server(app_handle: AppHandle, id: i64) -> Result<(), String> {
-    let conn = get(&app_handle)?;
-
+pub fn delete_server(conn: &Connection, id: i64) -> Result<(), String> {
     conn.execute(
         "DELETE FROM servers WHERE id = ?1",
         params![id],

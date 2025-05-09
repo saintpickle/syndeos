@@ -1,25 +1,17 @@
-use crate::database::connection::get;
-use crate::models::SshKey;
-use rusqlite::{params};
+use rusqlite::{params, Connection};
 use std::fs;
-use tauri::AppHandle;
-use crate::controllers::hasher;
+use crate::common;
+use super::model::SshKey;
+use common::{hasher};
 
-#[tauri::command]
-pub fn init_ssh_keys(app_handle: AppHandle) -> Result<Vec<SshKey>, String> {
-    // Get the user's home directory
+pub fn init_ssh_keys(conn: &Connection) -> Result<Vec<SshKey>, String> {
     let home_dir = dirs::home_dir().ok_or("Could not get home directory")?;
     let ssh_dir = home_dir.join(".ssh");
 
-    // Check if .ssh directory exists
     if !ssh_dir.exists() {
-        return Ok(Vec::new()); // Return empty vector if no .ssh directory
+        return Ok(Vec::new());
     }
 
-    // Get database connection
-    let conn = get(&app_handle)?;
-
-    // Read directory and filter for private key files
     let entries = fs::read_dir(&ssh_dir).map_err(|e| format!("Failed to read .ssh directory: {}", e))?;
 
     let mut added_keys = Vec::new();
@@ -32,7 +24,6 @@ pub fn init_ssh_keys(app_handle: AppHandle) -> Result<Vec<SshKey>, String> {
             continue;
         }
 
-        // Get the filename as the key name
         let key_name = path.file_name()
             .and_then(|name| name.to_str())
             .ok_or_else(|| format!("Invalid filename: {:?}", path))?
@@ -40,32 +31,26 @@ pub fn init_ssh_keys(app_handle: AppHandle) -> Result<Vec<SshKey>, String> {
 
         let path_str = path.to_string_lossy().to_string();
 
-        // Check if this key already exists in the database
         let mut stmt = conn.prepare("SELECT COUNT(*) FROM ssh_keys WHERE path = ?1")
             .map_err(|e| e.to_string())?;
 
         let count: i64 = stmt.query_row(&[&path_str], |row| row.get(0))
             .map_err(|e| e.to_string())?;
 
-        // Skip if already in database
         if count > 0 {
             continue;
         }
 
-        // Use current time for timestamps
         let now = chrono::Local::now().to_rfc3339();
 
-        // Insert into database - not setting as default
         conn.execute(
             "INSERT INTO ssh_keys (name, path, is_default, created_at, updated_at)
              VALUES (?1, ?2, 0, ?3, ?4)",
             &[&key_name, &path_str, &now, &now],
         ).map_err(|e| e.to_string())?;
 
-        // Get the inserted key's ID
         let id = conn.last_insert_rowid();
 
-        // Add to return list
         added_keys.push(SshKey {
             id: Some(id),
             name: key_name,
@@ -80,40 +65,32 @@ pub fn init_ssh_keys(app_handle: AppHandle) -> Result<Vec<SshKey>, String> {
     Ok(added_keys)
 }
 
-#[tauri::command]
-pub fn add_ssh_key(app_handle: AppHandle, name: String, path: String, password: String, is_default: bool) -> Result<i64, String> {
-    let conn = get(&app_handle)?;
-
-    // Use current time for timestamps
+pub fn add_ssh_key(conn: &Connection, name: String, path: String, password: String, is_default: bool) -> Result<SshKey, String> {
     let now = chrono::Local::now().to_rfc3339();
-
-    // If this key is default, unset any existing default
+    
     if is_default {
         conn.execute(
             "UPDATE ssh_keys SET is_default = 0 WHERE is_default = 1",
             [],
         ).map_err(|e| e.to_string())?;
     }
-
+    
     let password_hash = if password.trim().is_empty() {
-        None
-    } else {
-        Some(hasher::hash_password(&password).map_err(|e| e.to_string())?)
-    };
+            None
+        } else {
+            Some(hasher::hash_password(&password).map_err(|e| e.to_string())?)
+        };
 
     conn.execute(
         "INSERT INTO ssh_keys (name, path, password, is_default, created_at, updated_at)
          VALUES (?1, ?2, ?3, ?4, ?5, ?6)",
         params![name, path, password_hash, is_default, now, now],
     ).map_err(|e| e.to_string())?;
-
-    Ok(conn.last_insert_rowid())
+    
+    get_ssh_key(&conn, conn.last_insert_rowid())
 }
 
-#[tauri::command]
-pub fn get_ssh_key(app_handle: AppHandle, id: i64) -> Result<SshKey, String> {
-    let conn = get(&app_handle)?;
-
+pub fn get_ssh_key(conn: &Connection, id: i64) -> Result<SshKey, String> {
     conn.query_row(
         "SELECT id, name, path, is_default, created_at, updated_at
          FROM ssh_keys WHERE id = ?1",
@@ -130,10 +107,7 @@ pub fn get_ssh_key(app_handle: AppHandle, id: i64) -> Result<SshKey, String> {
     ).map_err(|e| e.to_string())
 }
 
-#[tauri::command]
-pub fn get_ssh_keys(app_handle: AppHandle) -> Result<Vec<SshKey>, String> {
-    let conn = get(&app_handle)?;
-
+pub fn get_ssh_keys(conn: &Connection) -> Result<Vec<SshKey>, String> {
     let mut stmt = conn.prepare("
         SELECT id, name, path, is_default, created_at, updated_at
         FROM ssh_keys
@@ -159,17 +133,12 @@ pub fn get_ssh_keys(app_handle: AppHandle) -> Result<Vec<SshKey>, String> {
     Ok(keys)
 }
 
-#[tauri::command]
-pub fn set_default_ssh_key(app_handle: AppHandle, id: i64) -> Result<(), String> {
-    let conn = get(&app_handle)?;
-
-    // First, unset any existing default
+pub fn set_default_ssh_key(conn: &Connection, id: i64) -> Result<(), String> {
     conn.execute(
         "UPDATE ssh_keys SET is_default = 0 WHERE is_default = 1",
         [],
     ).map_err(|e| e.to_string())?;
 
-    // Then set the new default
     conn.execute(
         "UPDATE ssh_keys SET is_default = 1 WHERE id = ?1",
         params![id],
@@ -178,11 +147,7 @@ pub fn set_default_ssh_key(app_handle: AppHandle, id: i64) -> Result<(), String>
     Ok(())
 }
 
-#[tauri::command]
-pub fn delete_ssh_key(app_handle: AppHandle, id: i64, delete_file: bool) -> Result<(), String> {
-    let conn = get(&app_handle)?;
-
-    // Get the file path before deleting the record
+pub fn delete_ssh_key(conn: &Connection, id: i64, delete_file: bool) -> Result<(), String> {
     let path = if delete_file {
         Some(conn.query_row(
             "SELECT path FROM ssh_keys WHERE id = ?1",
@@ -193,13 +158,11 @@ pub fn delete_ssh_key(app_handle: AppHandle, id: i64, delete_file: bool) -> Resu
         None
     };
 
-    // Delete the record
     conn.execute(
         "DELETE FROM ssh_keys WHERE id = ?1",
         params![id],
     ).map_err(|e| e.to_string())?;
 
-    // Delete the file if requested
     if let Some(file_path) = path {
         if delete_file {
             if let Err(e) = fs::remove_file(&file_path) {
@@ -214,13 +177,10 @@ pub fn delete_ssh_key(app_handle: AppHandle, id: i64, delete_file: bool) -> Resu
     Ok(())
 }
 
-#[tauri::command]
-pub fn generate_ssh_key(app_handle: AppHandle, name: String, password: String) -> Result<String, String> {
-    // Get the user's home directory
+pub fn generate_ssh_key(conn: &Connection, name: String, password: String, is_default: bool) -> Result<SshKey, String> {
     let home_dir = dirs::home_dir().ok_or("Could not get home directory")?;
     let ssh_dir = home_dir.join(".ssh");
 
-    // Create .ssh directory if it doesn't exist
     if !ssh_dir.exists() {
         fs::create_dir_all(&ssh_dir).map_err(|e| e.to_string())?;
         // Set appropriate permissions (unix only)
@@ -232,12 +192,11 @@ pub fn generate_ssh_key(app_handle: AppHandle, name: String, password: String) -
         }
     }
 
-    let key_path = ssh_dir.join(format!("{}", name));
+    let key_path = ssh_dir.join(format!("{}", name.clone()));
     let key_path_str = key_path.to_str().ok_or("Invalid path")?.to_string();
     let public_key_name = format!("{}.pub", name.clone());
     let public_key_path = format!("{}.pub", key_path_str.clone());
 
-    // Generate key using ssh-keygen via Command
     use std::process::Command;
 
     let mut cmd = Command::new("ssh-keygen");
@@ -246,7 +205,6 @@ pub fn generate_ssh_key(app_handle: AppHandle, name: String, password: String) -
         .arg("-f")
         .arg(&key_path);
 
-    // Check if password is None OR is Some but empty string
     if password.is_empty() {
         cmd.arg("-N").arg("");
     } else {
@@ -259,9 +217,6 @@ pub fn generate_ssh_key(app_handle: AppHandle, name: String, password: String) -
     if !output.status.success() {
         return Err(format!("ssh-keygen failed: {}", String::from_utf8_lossy(&output.stderr)));
     }
-
-    // Add to database
-    add_ssh_key(app_handle, public_key_name, public_key_path.clone(), password, false)?;
-
-    Ok(public_key_path)
+    
+    add_ssh_key(&conn, public_key_name, public_key_path, password, is_default)
 }
