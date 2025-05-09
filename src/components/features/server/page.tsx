@@ -4,12 +4,14 @@ import { useServerContext } from '@/components/providers/server';
 import { usePageContext } from '@/components/providers/page';
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { EyeIcon, EyeOffIcon } from 'lucide-react';
 
 export default function ServerPage() {
     const { selectedServerId, serverData } = useServerContext();
     const { setCurrentPage } = usePageContext();
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [showIpAddress, setShowIpAddress] = useState(false);
 
     useEffect(() => {
         if (!selectedServerId && !serverData) {
@@ -49,9 +51,24 @@ export default function ServerPage() {
                             <span className="font-medium">Hostname:</span>
                             <span>{serverData.hostname}</span>
                         </div>
-                        <div className="flex justify-between">
+                        <div className="flex justify-between items-center">
                             <span className="font-medium">IP Address:</span>
-                            <span>{serverData.ip_address}</span>
+                            <div className="flex items-center gap-2">
+                                <span>
+                                    {serverData.ip_address ? (showIpAddress ? serverData.ip_address : '••••••••••') : 'N/A'}
+                                </span>
+                                {serverData.ip_address && (
+                                    <Button 
+                                        variant="ghost" 
+                                        size="icon" 
+                                        className="h-6 w-6" 
+                                        onClick={() => setShowIpAddress(!showIpAddress)}
+                                        title={showIpAddress ? "Hide IP Address" : "Show IP Address"}
+                                    >
+                                        {showIpAddress ? <EyeOffIcon className="h-4 w-4" /> : <EyeIcon className="h-4 w-4" />}
+                                    </Button>
+                                )}
+                            </div>
                         </div>
                         <div className="flex justify-between">
                             <span className="font-medium">Port:</span>

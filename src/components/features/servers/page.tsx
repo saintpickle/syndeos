@@ -18,17 +18,24 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { MoreHorizontal } from "lucide-react";
+import { MoreHorizontal, EyeIcon, EyeOffIcon } from "lucide-react";
 
 export default function ServersPage() {
     const [servers, setServers] = useState<Servers>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [visibleIpMap, setVisibleIpMap] = useState<Record<number, boolean>>({});
     const { setCurrentPage } = usePageContext();
     const { setSelectedServerId, setServerData } = useServerContext();
 
+    const toggleIpVisibility = (serverId: number) => {
+        setVisibleIpMap(prev => ({
+            ...prev,
+            [serverId]: !prev[serverId]
+        }));
+    };
+
     useEffect(() => {
-        // Fetch servers from the backend
         const fetchServers = async () => {
             try {
                 setLoading(true);
@@ -129,7 +136,28 @@ export default function ServersPage() {
                         <TableRow key={server.id}>
                             <TableCell className="font-medium">{server.name}</TableCell>
                             <TableCell>{server.hostname}</TableCell>
-                            <TableCell>{server.ip_address}</TableCell>
+                            <TableCell>
+                                <div className="flex items-center gap-2">
+                                    <span>{server.ip_address ? (visibleIpMap[server.id || 0] ? server.ip_address : '••••••••••') : 'N/A'}</span>
+                                    {server.ip_address && (
+                                        <Button
+                                            variant="ghost"
+                                            size="icon"
+                                            className="h-6 w-6 p-0"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                server.id && toggleIpVisibility(server.id);
+                                            }}
+                                            title={visibleIpMap[server.id || 0] ? "Hide IP Address" : "Show IP Address"}
+                                        >
+                                            {visibleIpMap[server.id || 0] ?
+                                                <EyeOffIcon className="h-3 w-3" /> :
+                                                <EyeIcon className="h-3 w-3" />
+                                            }
+                                        </Button>
+                                    )}
+                                </div>
+                            </TableCell>
                             <TableCell>{server.port}</TableCell>
                             <TableCell>{server.username}</TableCell>
                             <TableCell className="text-right">
