@@ -7,6 +7,7 @@ export type Server = {
     username: string;
     ssh_key_id?: number;
     notes?: string;
+    settings: string;
     created_at: string;
     updated_at: string;
 };
