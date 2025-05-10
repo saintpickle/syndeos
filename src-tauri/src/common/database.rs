@@ -4,27 +4,21 @@ pub mod connection {
     use std::path::PathBuf;
     use tauri::{AppHandle, Manager};
 
-    // Helper function to get app data directory
     fn get_app_data_dir(app_handle: &AppHandle) -> Result<PathBuf, String> {
         app_handle.path().app_data_dir().map_err(|e| e.to_string())
     }
 
-    // Modified to take AppHandle as parameter
     pub fn init_database(app_handle: AppHandle) -> Result<String, String> {
-        // Get the app data directory using the new API
         let app_dir = get_app_data_dir(&app_handle)?;
 
-        // Create the directory if it doesn't exist
         if !app_dir.exists() {
             fs::create_dir_all(&app_dir).map_err(|e| e.to_string())?;
         }
 
         let db_path = app_dir.join("syndeos.db");
 
-        // Create or open the database
         let conn = Connection::open(&db_path).map_err(|e| e.to_string())?;
 
-        // Create servers table
         conn.execute(
             "CREATE TABLE IF NOT EXISTS servers (
                 id INTEGER PRIMARY KEY,
@@ -35,6 +29,7 @@ pub mod connection {
                 username TEXT NOT NULL,
                 ssh_key_id INTEGER,
                 notes TEXT,
+                settings TEXT NOT NULL DEFAULT '{}',
                 created_at TEXT NOT NULL,
                 updated_at TEXT NOT NULL,
                 FOREIGN KEY (ssh_key_id) REFERENCES ssh_keys (id)
@@ -43,18 +38,17 @@ pub mod connection {
         )
             .map_err(|e| e.to_string())?;
 
-        // Create settings table
         conn.execute(
             "CREATE TABLE IF NOT EXISTS settings (
                 id INTEGER PRIMARY KEY,
                 key TEXT NOT NULL UNIQUE,
-                value TEXT NOT NULL
+                value TEXT NOT NULL,
+                value_type TEXT NOT NULL DEFAULT 'string'
             )",
             [],
         )
             .map_err(|e| e.to_string())?;
 
-        // Create ssh_keys table
         conn.execute(
             "CREATE TABLE IF NOT EXISTS ssh_keys (
                 id INTEGER PRIMARY KEY,

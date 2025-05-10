@@ -37,3 +37,10 @@ pub fn delete_server(app_handle: AppHandle, id: i64) -> Result<(), String> {
 
     service::delete_server(&conn, id)
 }
+
+#[tauri::command]
+pub fn update_settings(app_handle: AppHandle, id: i64, settings: serde_json::Value) -> Result<(), String> {
+    let conn = connection::get(&app_handle)?;
+
+    service::update_settings(&conn, id, settings)
+}

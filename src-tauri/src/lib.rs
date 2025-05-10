@@ -33,6 +33,7 @@ pub fn run() {
             features::server::update_server,
             features::server::delete_server,
             features::server::get_servers,
+            features::server::update_settings,
 
             features::ssh_key::add_ssh_key,
             features::ssh_key::delete_ssh_key,
