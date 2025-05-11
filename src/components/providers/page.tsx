@@ -51,7 +51,7 @@ export function PageProvider({ children }: { children: React.ReactNode }) {
     useEffect(() => {
         async function fetchDefaultPage() {
             try {
-                const storedPage = await invoke<string>('get_setting', { key: 'default-view' });
+                const storedPage = await invoke<string>('get_setting', { key: 'ui/default-view' });
                 if (storedPage && PAGES[storedPage as PageKey]) {
                     setCurrentPage(storedPage as PageKey);
                 }
