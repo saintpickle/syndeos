@@ -14,14 +14,16 @@ import { invoke } from "@tauri-apps/api/core";
 export default function UI() {
     const [defaultView, setDefaultView] = useState<string>("");
 
-    useEffect(() => {
-        // Fetch the default view setting from the backend
-        invoke<string>("get_setting", { key: "default-view" })
+    async function get_default_view() {
+        invoke<string>("get_setting", { key: "ui/default-view" })
             .then((value) => {
-                //console.log("Default view fetched:", value);
                 setDefaultView(value);
             })
             .catch((error) => console.error("Failed to fetch default view:", error));
+    }
+
+    useEffect(() => {
+        get_default_view().catch(err => console.log(err))
     }, []);
 
     return (
@@ -35,8 +37,11 @@ export default function UI() {
                 <Select
                     aria-labeledby="default-view"
                     value={defaultView} // Bind the selected value to the state, ensuring the dropdown reflects the current default view.
-                    onValueChange={(value) => invoke("update_setting", { key: "default-view", value })}
-                    
+                    onValueChange={(value) => {
+                        invoke("update_setting", { key: "ui/default-view", value })
+                            .then(_ => get_default_view().catch(err => console.log(err)))
+                            .catch((err) => console.log(err));
+                    }}
                 >
                     <SelectTrigger className="w-[180px] bg-white mt-2">
                         <SelectValue placeholder="Select a view" />
