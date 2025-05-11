@@ -1,5 +1,6 @@
+import { useEffect, useState } from "react";
 import { Label } from "@/components/ui/label"
-import {ThemeToggler} from "@/components/ui/theme-toggler.tsx";
+import { ThemeToggler } from "@/components/ui/theme-toggler.tsx";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import {
     Select,
@@ -8,8 +9,23 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
+import { invoke } from "@tauri-apps/api/core";
 
 export default function UI() {
+    const [defaultView, setDefaultView] = useState<string>("");
+
+    async function get_default_view() {
+        invoke<string>("get_setting", { key: "ui/default-view" })
+            .then((value) => {
+                setDefaultView(value);
+            })
+            .catch((error) => console.error("Failed to fetch default view:", error));
+    }
+
+    useEffect(() => {
+        get_default_view().catch(err => console.log(err))
+    }, []);
+
     return (
         <div className="space-y-6 mt-6">
             <div className="space-y-3">
@@ -18,13 +34,21 @@ export default function UI() {
             </div>
             <div>
                 <Label id="default-view">Default View</Label>
-                <Select disabled>
+                <Select
+                    aria-labeledby="default-view"
+                    value={defaultView} // Bind the selected value to the state, ensuring the dropdown reflects the current default view.
+                    onValueChange={(value) => {
+                        invoke("update_setting", { key: "ui/default-view", value })
+                            .then(_ => get_default_view().catch(err => console.log(err)))
+                            .catch((err) => console.log(err));
+                    }}
+                >
                     <SelectTrigger className="w-[180px] bg-white mt-2">
                         <SelectValue placeholder="Select a view" />
                     </SelectTrigger>
                     <SelectContent>
                         <SelectItem value="servers">Servers</SelectItem>
-                        <SelectItem value="ssh-keys">SSH Keys</SelectItem>
+                        <SelectItem value="keys">SSH Keys</SelectItem>
                     </SelectContent>
                 </Select>
             </div>
