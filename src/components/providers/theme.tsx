@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from 'react';
-import { invoke } from '@tauri-apps/api/core';
+import { useSettings } from './settings';
 
 type Theme = 'light' | 'dark' | 'system';
 
@@ -14,28 +14,23 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     const [theme, setTheme] = useState<Theme>('system');
     const [isLoading, setIsLoading] = useState(true);
 
+    const { settings, isLoading: settingsLoading, updateSettings } = useSettings();
+
     useEffect(() => {
-        const loadTheme = async () => {
-            try {
-                const savedTheme = await invoke<string>('get_setting', { key: 'ui/theme' });
-                if (savedTheme && ['light', 'dark', 'system'].includes(savedTheme)) {
-                    setTheme(savedTheme as Theme);
-                }
-            } catch (error) {
-                console.error('Failed to load theme setting:', error);
-            } finally {
-                setIsLoading(false);
-            }
-        };
+        if (settingsLoading) return;
 
-        loadTheme();
-    }, []);
+        const savedTheme = settings['ui/theme'];
+        if (savedTheme && ['light', 'dark', 'system'].includes(savedTheme)) {
+            setTheme(savedTheme as Theme);
+        }
 
-    // Save theme to database whenever it changes
+        setIsLoading(false);
+    }, [settings, settingsLoading]);
+
     const updateTheme = async (newTheme: Theme) => {
         setTheme(newTheme);
         try {
-            await invoke('update_setting', { key: 'ui/theme', value: newTheme });
+            await updateSettings({ 'ui/theme': newTheme });
         } catch (error) {
             console.error('Failed to save theme setting:', error);
         }
@@ -47,10 +42,8 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
         const root = window.document.documentElement;
 
-        // Remove previous theme classes
         root.classList.remove('light', 'dark');
 
-        // Apply appropriate theme
         if (theme === 'system') {
             const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches
                 ? 'dark'
@@ -61,7 +54,6 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
         }
     }, [theme, isLoading]);
 
-    // Listen for system theme changes if using system theme
     useEffect(() => {
         if (theme !== 'system') return;
 

@@ -29,6 +29,7 @@ export type Setting = {
     id?: number;
     key: string;
     value: string;
+    value_type: "integer" | "string" | "boolean";
 };
 
 export type Settings = Setting[];

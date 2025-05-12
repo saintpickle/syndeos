@@ -36,7 +36,7 @@ export default function ServerPage() {
         <div className="space-y-6">
             <div className="flex justify-between items-center">
                 <h2 className="text-2xl font-bold">{serverData.name}</h2>
-                <Button variant="outline" onClick={handleBackToServers}>
+                <Button onClick={handleBackToServers}>
                     Back to Servers
                 </Button>
             </div>

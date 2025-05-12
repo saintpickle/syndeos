@@ -20,13 +20,35 @@ import {
 
 import {Button} from "@/components/ui/button";
 import {invoke} from "@tauri-apps/api/core";
+import { useSettings } from "@/components/providers/settings"
+import { useState } from "react"
 
 export default function Advanced() {
+    const { settings, updateSettings, isLoading } = useSettings();
+    const [showSettings, setShowSettings] = useState(false);
+
+    const handleSaveAllSettings = async () => {
+        try {
+            // Example of updating multiple settings at once
+            await updateSettings({
+                'advanced/log_level': 'info'
+            });
+            alert('Advanced settings updated successfully!');
+        } catch (error) {
+            console.error('Failed to update settings:', error);
+            alert('Failed to update settings');
+        }
+    };
+
     return (
         <div className="space-y-6 mt-6">
             <div>
                 <Label id="log-level">Log Level</Label>
-                <Select aria-labeledby="log-level" disabled>
+                <Select 
+                    aria-labeledby="log-level" 
+                    disabled
+                    value={settings['advanced/log_level'] || 'info'}
+                >
                     <SelectTrigger className="w-[180px] bg-white mt-2">
                         <SelectValue placeholder="Select a level" />
                     </SelectTrigger>
@@ -51,7 +73,34 @@ export default function Advanced() {
                 Coming Soon!
             </div>
 
-            <div>
+            <div className="space-y-3 pt-6 border-t">
+                <Label>Settings Demo</Label>
+                <div className="flex space-x-4">
+                    <Button onClick={() => setShowSettings(!showSettings)}>
+                        {showSettings ? 'Hide Settings' : 'Show Settings'}
+                    </Button>
+                    <Button onClick={handleSaveAllSettings}>
+                        Save Advanced Settings
+                    </Button>
+                </div>
+
+                {showSettings && (
+                    <div className="p-4 border rounded-md bg-slate-50 dark:bg-slate-900">
+                        <h3 className="font-medium mb-2">Current Advanced Settings:</h3>
+                        {isLoading ? (
+                            <p>Loading settings...</p>
+                        ) : (
+                            <pre className="text-xs overflow-auto p-2 bg-slate-100 dark:bg-slate-800 rounded">
+                                {JSON.stringify({
+                                    'advanced/log_level': settings['advanced/log_level']
+                                }, null, 2)}
+                            </pre>
+                        )}
+                    </div>
+                )}
+            </div>
+
+            <div className="pt-6 border-t">
                 <AlertDialog>
                     <AlertDialogTrigger asChild>
                         <Button variant="destructive">Reset App</Button>

@@ -8,17 +8,48 @@ import {
     SelectValue,
 } from "@/components/ui/select"
 import { Checkbox } from "@/components/ui/checkbox"
+import { useSettings } from "@/components/providers/settings"
+import { Button } from "@/components/ui/button"
+import { useState } from "react"
 
 export default function Backup() {
+    const { settings, updateSettings, isLoading } = useSettings();
+    const [showSettings, setShowSettings] = useState(false);
+
+    const handleSaveAllSettings = async () => {
+        try {
+            // Example of updating multiple settings at once
+            await updateSettings({
+                'backup/location': '/path/to/backups',
+                'backup/frequency': 'never',
+                'backup/encrypt': 'false',
+                'backup/encryption_password': ''
+            });
+            alert('Backup settings updated successfully!');
+        } catch (error) {
+            console.error('Failed to update settings:', error);
+            alert('Failed to update settings');
+        }
+    };
+
     return (
         <div className="space-y-6 mt-6">
             <div>
                 <Label htmlFor="database-backup-location">Database Backup Location</Label>
-                <Input id="database-backup-location" className="bg-white mt-2" disabled />
+                <Input 
+                    id="database-backup-location" 
+                    className="bg-white mt-2" 
+                    disabled 
+                    value={settings['backup/location'] || '/path/to/backups'}
+                />
             </div>
             <div>
                 <Label id="auto-backup-frequency">Auto-Backup Frequency</Label>
-                <Select aria-labeledby="auto-backup-frequency" disabled>
+                <Select 
+                    aria-labeledby="auto-backup-frequency" 
+                    disabled
+                    value={settings['backup/frequency'] || 'never'}
+                >
                     <SelectTrigger className="w-[180px] bg-white mt-2">
                         <SelectValue placeholder="Select a frequency" />
                     </SelectTrigger>
@@ -33,7 +64,12 @@ export default function Backup() {
                 </Select>
             </div>
             <div className="flex items-center space-x-2">
-                <Checkbox id="encrypt-backups" className="bg-white" disabled />
+                <Checkbox 
+                    id="encrypt-backups" 
+                    className="bg-white" 
+                    disabled 
+                    checked={settings['backup/encrypt'] === 'true'}
+                />
                 <label
                     htmlFor="encrypt-backups"
                     className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
@@ -43,7 +79,43 @@ export default function Backup() {
             </div>
             <div>
                 <Label htmlFor="encryption-password">Encryption Password</Label>
-                <Input id="encryption-password" type="password" className="bg-white mt-2" disabled />
+                <Input 
+                    id="encryption-password" 
+                    type="password" 
+                    className="bg-white mt-2" 
+                    disabled 
+                    value={settings['backup/encryption_password'] || ''}
+                />
+            </div>
+
+            <div className="space-y-3 pt-6 border-t">
+                <Label>Settings Demo</Label>
+                <div className="flex space-x-4">
+                    <Button onClick={() => setShowSettings(!showSettings)}>
+                        {showSettings ? 'Hide Settings' : 'Show Settings'}
+                    </Button>
+                    <Button onClick={handleSaveAllSettings}>
+                        Save Backup Settings
+                    </Button>
+                </div>
+
+                {showSettings && (
+                    <div className="p-4 border rounded-md bg-slate-50 dark:bg-slate-900">
+                        <h3 className="font-medium mb-2">Current Backup Settings:</h3>
+                        {isLoading ? (
+                            <p>Loading settings...</p>
+                        ) : (
+                            <pre className="text-xs overflow-auto p-2 bg-slate-100 dark:bg-slate-800 rounded">
+                                {JSON.stringify({
+                                    'backup/location': settings['backup/location'],
+                                    'backup/frequency': settings['backup/frequency'],
+                                    'backup/encrypt': settings['backup/encrypt'],
+                                    'backup/encryption_password': settings['backup/encryption_password'] ? '********' : ''
+                                }, null, 2)}
+                            </pre>
+                        )}
+                    </div>
+                )}
             </div>
         </div>
     )

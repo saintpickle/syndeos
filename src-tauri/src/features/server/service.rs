@@ -56,14 +56,14 @@ pub fn get_server(conn: &Connection, id: i64) -> Result<Server, String> {
 
 pub fn get_servers(conn: &Connection) -> Result<Vec<Server>, String> {
     let mut stmt = conn.prepare("
-        SELECT id, name, hostname, ip_address, port, username, ssh_key_id, notes, created_at, updated_at
+        SELECT id, name, hostname, ip_address, port, username, ssh_key_id, notes, settings, created_at, updated_at
         FROM servers
     ").map_err(|e| e.to_string())?;
 
     let server_iter = stmt.query_map([], |row| {
         let settings_str: String = row.get(8)?;
         let settings = serde_json::from_str(&settings_str).unwrap_or_else(|_| serde_json::json!({}));
-        
+
         Ok(Server {
             id: Some(row.get(0)?),
             name: row.get(1)?,
