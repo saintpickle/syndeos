@@ -19,11 +19,16 @@ pub fn init_default_settings(conn: Connection) -> Result<(), String> {
 
         conn.execute(
             "INSERT INTO settings (key, value) VALUES (?1, ?2)",
-            params!["connection/ssh_timeout", "30"],
+            params!["ui/default_view", "servers"],
         ).map_err(|e| e.to_string())?;
 
         conn.execute(
             "INSERT INTO settings (key, value) VALUES (?1, ?2)",
+            params!["connection/ssh_timeout", "30"],
+        ).map_err(|e| e.to_string())?;
+
+        conn.execute(
+            "INSERT INTO settings (key, value) VALUES (?1, ?2, ?3)",
             params!["server/default_port", "22"],
         ).map_err(|e| e.to_string())?;
     }
@@ -40,7 +45,7 @@ pub fn get_setting(conn: Connection, key: String) -> Result<String, String> {
 }
 
 pub fn get_settings(conn: Connection) -> Result<Vec<Setting>, String> {
-    let mut stmt = conn.prepare("SELECT id, key, value FROM settings")
+    let mut stmt = conn.prepare("SELECT id, key, value, value_type FROM settings")
         .map_err(|e| e.to_string())?;
 
     let settings_iter = stmt.query_map([], |row| {

@@ -13,24 +13,9 @@ import { Button } from "@/components/ui/button"
 import { useState } from "react"
 
 export default function UI() {
-    const { settings, updateSettings, isLoading } = useSettings();
+    const { settings, updateSetting, isLoading } = useSettings();
     const [showSettings, setShowSettings] = useState(false);
 
-    const handleSaveAllSettings = async () => {
-        try {
-            // Example of updating multiple settings at once
-            await updateSettings({
-                'ui/theme': 'system',
-                'ui/default_view': 'servers',
-                'ui/table_density': 'compact',
-                'ui/date_format': 'MM/DD/YYYY'
-            });
-            alert('UI settings updated successfully!');
-        } catch (error) {
-            console.error('Failed to update settings:', error);
-            alert('Failed to update settings');
-        }
-    };
     return (
         <div className="space-y-6 mt-6">
             <div className="space-y-3">
@@ -40,22 +25,22 @@ export default function UI() {
             <div>
                 <Label id="default-view">Default View</Label>
                 <Select 
-                    disabled
-                    value={settings['ui/default_view'] || 'servers'}
+                    value={settings['ui/default_view']}
+                    onValueChange={(value) => updateSetting('ui/default_view', value)}
                 >
                     <SelectTrigger className="w-[180px] bg-white mt-2">
                         <SelectValue placeholder="Select a view" />
                     </SelectTrigger>
                     <SelectContent>
                         <SelectItem value="servers">Servers</SelectItem>
-                        <SelectItem value="ssh-keys">SSH Keys</SelectItem>
+                        <SelectItem value="keys">SSH Keys</SelectItem>
                     </SelectContent>
                 </Select>
             </div>
             <div>
                 <Label className="mb-3">Table Display Density</Label>
                 <RadioGroup 
-                    value={settings['ui/table_density'] || 'compact'} 
+                    value={settings['ui/table_density']}
                     disabled
                 >
                     <div className="flex items-center space-x-2">
@@ -86,13 +71,10 @@ export default function UI() {
             </div>
 
             <div className="space-y-3 pt-6 border-t">
-                <Label>Settings Demo</Label>
+                <Label>Settings JSON</Label>
                 <div className="flex space-x-4">
                     <Button onClick={() => setShowSettings(!showSettings)}>
                         {showSettings ? 'Hide Settings' : 'Show Settings'}
-                    </Button>
-                    <Button onClick={handleSaveAllSettings}>
-                        Save UI Settings
                     </Button>
                 </div>
 
