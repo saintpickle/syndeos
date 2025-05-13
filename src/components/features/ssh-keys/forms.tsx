@@ -23,6 +23,7 @@ import {
 } from "@/components/ui/form";
 import {Input} from "@/components/ui/input";
 import {Checkbox} from "@/components/ui/checkbox";
+import {toast} from "sonner";
 import {SshKey} from "@/types.ts";
 
 const generateKeySchema = z.object({
@@ -91,9 +92,13 @@ export function SshKeyForms({onSuccess}: AddKeyFormProps) {
                     setOpen(false);
                     generateKeyForm.reset();
                     onSuccess();
+                    toast.success("SSH Key Generated Successfully");
                 }
             })
-            .catch((error) => console.log(error));
+            .catch((error) => {
+                console.log(error);
+                toast.error("Error Generating SSH Key");
+            });
     }
 
     function onAddKeySubmit(values: z.infer<typeof addKeySchema>) {
@@ -115,9 +120,13 @@ export function SshKeyForms({onSuccess}: AddKeyFormProps) {
                     setOpen(false);
                     addKeyForm.reset();
                     onSuccess();
+                    toast.success("SSH Key Added Successfully");
                 }
             })
-            .catch((error) => console.log(error));
+            .catch((error) => {
+                console.log(error);
+                toast.error("Error Adding SSH Key");
+            });
     }
 
     return (

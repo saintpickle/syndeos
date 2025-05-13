@@ -38,6 +38,7 @@ import {
 import {invoke} from "@tauri-apps/api/core";
 import {SshKey, SshKeys} from "@/types.ts";
 import {Textarea} from "@/components/ui/textarea";
+import { toast } from "sonner";
 
 // Define the schema with proper types
 const serverFormSchema = z.object({
@@ -133,8 +134,11 @@ export function AddServerForm({
 
             setOpen(false);
             form.reset();
+
+            toast.success("Server Added Successfully");
         } catch (error) {
             console.error("Error adding server:", error);
+            toast.error("Error Adding Server");
         } finally {
             setIsSubmitting(false);
         }

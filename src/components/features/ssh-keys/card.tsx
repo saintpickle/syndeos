@@ -12,6 +12,7 @@ import { invoke } from "@tauri-apps/api/core";
 import { SshKey } from "@/types";
 import { fdate } from "@/lib/utils";
 import { ConfirmationModal } from "@/components/confirmation-modal";
+import { toast } from "sonner";
 
 type Props = {
     sshKey: SshKey;
@@ -21,14 +22,34 @@ type Props = {
 export default function SshKeyCard({ sshKey, update_keys }: Props) {
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
-    function delete_key(id: number | undefined) {
+   const handleSetDefault = (id: number | undefined) => {
+       if (!id) {
+           return toast.error('An error occurred while setting the SSH key as default.');
+       }
+
+       invoke("set_default_ssh_key", { id: sshKey.id })
+           .then(() => {
+               update_keys();
+               toast.success('SSH Key set as default successfully.');
+           })
+           .catch(error => {
+               console.log(error);
+               toast.error('An error occurred while setting the SSH key as default.');
+           })
+   }
+
+    const handleDelete = (id: number | undefined) => {
         if (!id) return;
 
         invoke<string>("delete_ssh_key", { id: id, deleteFile: true })
             .then(() => {
                 update_keys();
+                toast.success('SSH Key deleted successfully.');
             })
-            .catch(error => console.log(error));
+            .catch(error => {
+               console.log(error);
+               toast.error('An error occurred while deleting the SSH key.');
+            });
     }
 
     return (
@@ -50,11 +71,7 @@ export default function SshKeyCard({ sshKey, update_keys }: Props) {
                 <CardFooter className="flex justify-between">
                     <Button
                         variant="outline"
-                        onClick={() => {
-                            invoke("set_default_ssh_key", { id: sshKey.id })
-                                .then(() => update_keys())
-                                .catch(error => console.log(error))
-                        }}
+                        onClick={() => handleSetDefault(sshKey.id)}
                         disabled={sshKey.is_default}
                     >
                         {sshKey.is_default ? "Default Key" : "Set as Default"}
@@ -71,7 +88,7 @@ export default function SshKeyCard({ sshKey, update_keys }: Props) {
             <ConfirmationModal
                 isOpen={isDeleteModalOpen}
                 onConfirm={() => {
-                    delete_key(sshKey.id);
+                    handleDelete(sshKey.id);
                     setIsDeleteModalOpen(false);
                 }}
                 onCancel={() => setIsDeleteModalOpen(false)}

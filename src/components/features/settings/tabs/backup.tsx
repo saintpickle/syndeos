@@ -13,24 +13,8 @@ import { Button } from "@/components/ui/button"
 import { useState } from "react"
 
 export default function Backup() {
-    const { settings, updateSettings, isLoading } = useSettings();
+    const { settings, updateSettings, isLoading, scategories } = useSettings();
     const [showSettings, setShowSettings] = useState(false);
-
-    const handleSaveAllSettings = async () => {
-        try {
-            // Example of updating multiple settings at once
-            await updateSettings({
-                'backup/location': '/path/to/backups',
-                'backup/frequency': 'never',
-                'backup/encrypt': 'false',
-                'backup/encryption_password': ''
-            });
-            alert('Backup settings updated successfully!');
-        } catch (error) {
-            console.error('Failed to update settings:', error);
-            alert('Failed to update settings');
-        }
-    };
 
     return (
         <div className="space-y-6 mt-6">
@@ -89,13 +73,10 @@ export default function Backup() {
             </div>
 
             <div className="space-y-3 pt-6 border-t">
-                <Label>Settings Demo</Label>
+                <Label>Settings JSON</Label>
                 <div className="flex space-x-4">
                     <Button onClick={() => setShowSettings(!showSettings)}>
                         {showSettings ? 'Hide Settings' : 'Show Settings'}
-                    </Button>
-                    <Button onClick={handleSaveAllSettings}>
-                        Save Backup Settings
                     </Button>
                 </div>
 
@@ -106,12 +87,7 @@ export default function Backup() {
                             <p>Loading settings...</p>
                         ) : (
                             <pre className="text-xs overflow-auto p-2 bg-slate-100 dark:bg-slate-800 rounded">
-                                {JSON.stringify({
-                                    'backup/location': settings['backup/location'],
-                                    'backup/frequency': settings['backup/frequency'],
-                                    'backup/encrypt': settings['backup/encrypt'],
-                                    'backup/encryption_password': settings['backup/encryption_password'] ? '********' : ''
-                                }, null, 2)}
+                                {JSON.stringify(scategories.backup, null, 2)}
                             </pre>
                         )}
                     </div>

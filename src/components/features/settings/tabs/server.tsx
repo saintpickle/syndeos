@@ -12,26 +12,8 @@ import { Button } from "@/components/ui/button"
 import { useState } from "react"
 
 export default function Server() {
-    const { settings, updateSettings, isLoading } = useSettings();
+    const { settings, updateSettings, isLoading, scategories } = useSettings();
     const [showSettings, setShowSettings] = useState(false);
-
-    const handleSaveAllSettings = async () => {
-        try {
-            // Example of updating multiple settings at once
-            await updateSettings({
-                'server/auto_refresh_interval': '60',
-                'server/default_groups': 'dev',
-                'server/health_check_frequency': 'disable',
-                'server/cpu_usage_alert': '90',
-                'server/memory_usage_alert': '90',
-                'server/disk_usage_alert': '90'
-            });
-            alert('Server settings updated successfully!');
-        } catch (error) {
-            console.error('Failed to update settings:', error);
-            alert('Failed to update settings');
-        }
-    };
 
     return (
         <div className="space-y-6 mt-6">
@@ -125,13 +107,10 @@ export default function Server() {
             </div>
 
             <div className="space-y-3 pt-6 border-t">
-                <Label>Settings Demo</Label>
+                <Label>Settings JSON</Label>
                 <div className="flex space-x-4">
                     <Button onClick={() => setShowSettings(!showSettings)}>
                         {showSettings ? 'Hide Settings' : 'Show Settings'}
-                    </Button>
-                    <Button onClick={handleSaveAllSettings}>
-                        Save Server Settings
                     </Button>
                 </div>
 
@@ -142,14 +121,7 @@ export default function Server() {
                             <p>Loading settings...</p>
                         ) : (
                             <pre className="text-xs overflow-auto p-2 bg-slate-100 dark:bg-slate-800 rounded">
-                                {JSON.stringify({
-                                    'server/auto_refresh_interval': settings['server/auto_refresh_interval'],
-                                    'server/default_groups': settings['server/default_groups'],
-                                    'server/health_check_frequency': settings['server/health_check_frequency'],
-                                    'server/cpu_usage_alert': settings['server/cpu_usage_alert'],
-                                    'server/memory_usage_alert': settings['server/memory_usage_alert'],
-                                    'server/disk_usage_alert': settings['server/disk_usage_alert']
-                                }, null, 2)}
+                                {JSON.stringify(scategories.server, null, 2)}
                             </pre>
                         )}
                     </div>

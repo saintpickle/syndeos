@@ -9,6 +9,7 @@ interface SettingsContextType {
   updateSetting: (key: string, value: string) => Promise<void>;
   updateSettings: (newSettings: Record<string, string>) => Promise<void>;
   getSetting: (key: string) => string | undefined;
+  scategories: Record<string, Record<string, string>>;
 }
 
 const SettingsContext = createContext<SettingsContextType | undefined>(undefined);
@@ -85,6 +86,27 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
     return settings[key];
   };
 
+  const filterSettings = (filter_string: string) => {
+    let filterd_settings = {};
+
+    for (const [key, value] of Object.entries(settings)) {
+      if (key.includes(filter_string)) {
+        filterd_settings = {...filterd_settings, [key]: value}
+      }
+    }
+
+    return filterd_settings;
+  }
+
+  const scategories = {
+    ui: filterSettings('ui/'),
+    connections: filterSettings('connections/'),
+    security: filterSettings('security/'),
+    server: filterSettings('server/'),
+    advanced: filterSettings('advanced/'),
+    backup: filterSettings('backup/'),
+  };
+
   return (
     <SettingsContext.Provider
       value={{
@@ -93,7 +115,8 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
         error,
         updateSetting,
         updateSettings,
-        getSetting
+        getSetting,
+        scategories
       }}
     >
       {children}

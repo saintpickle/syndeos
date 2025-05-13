@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button"
 import { useState } from "react"
 
 export default function UI() {
-    const { settings, updateSetting, isLoading } = useSettings();
+    const { settings, updateSetting, isLoading, scategories } = useSettings();
     const [showSettings, setShowSettings] = useState(false);
 
     return (
@@ -85,12 +85,7 @@ export default function UI() {
                             <p>Loading settings...</p>
                         ) : (
                             <pre className="text-xs overflow-auto p-2 bg-slate-100 dark:bg-slate-800 rounded">
-                                {JSON.stringify({
-                                    'ui/theme': settings['ui/theme'],
-                                    'ui/default_view': settings['ui/default_view'],
-                                    'ui/table_density': settings['ui/table_density'],
-                                    'ui/date_format': settings['ui/date_format']
-                                }, null, 2)}
+                                {JSON.stringify(scategories.ui, null, 2)}
                             </pre>
                         )}
                     </div>

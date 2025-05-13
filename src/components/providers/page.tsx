@@ -4,6 +4,8 @@ import ServerPage from '@/components/features/server/page';
 import SettingsPage from '@/components/features/settings/page';
 import KeysPage from '@/components/features/ssh-keys/page';
 import { useSettings } from "@/components/providers/settings.tsx";
+import { Toaster } from "sonner";
+import { useTheme } from "@/components/providers/theme.tsx";
 
 // Define page types
 type PageKey = 'servers' | 'server' | 'settings' | 'keys';
@@ -43,6 +45,7 @@ interface PageContextType {
 const PageContext = createContext<PageContextType | undefined>(undefined);
 
 export function PageProvider({ children }: { children: React.ReactNode }) {
+    const { theme } = useTheme();
     const { settings } = useSettings();
     const DEFAULT_VIEW = settings['ui/default_view'] as PageKey;
 
@@ -58,6 +61,12 @@ export function PageProvider({ children }: { children: React.ReactNode }) {
     return (
         <PageContext.Provider value={{ currentPage, setCurrentPage, pageTitle }}>
             {children}
+
+            <Toaster
+                position='top-right'
+                richColors
+                theme={theme}
+            />
         </PageContext.Provider>
     );
 }

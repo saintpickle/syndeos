@@ -12,24 +12,8 @@ import { Button } from "@/components/ui/button"
 import { useState } from "react"
 
 export default function Security() {
-    const { settings, updateSettings, isLoading } = useSettings();
+    const { settings, updateSettings, isLoading, scategories } = useSettings();
     const [showSettings, setShowSettings] = useState(false);
-
-    const handleSaveAllSettings = async () => {
-        try {
-            // Example of updating multiple settings at once
-            await updateSettings({
-                'security/store_ssh_key_passwords': 'false',
-                'security/auto_logout_timer': 'never',
-                'security/require_uppercase': 'false',
-                'security/require_numbers': 'false'
-            });
-            alert('Security settings updated successfully!');
-        } catch (error) {
-            console.error('Failed to update settings:', error);
-            alert('Failed to update settings');
-        }
-    };
 
     return (
         <div className="space-y-6 mt-6">
@@ -98,13 +82,10 @@ export default function Security() {
             </div>
 
             <div className="space-y-3 pt-6 border-t">
-                <Label>Settings Demo</Label>
+                <Label>Settings JSON</Label>
                 <div className="flex space-x-4">
                     <Button onClick={() => setShowSettings(!showSettings)}>
                         {showSettings ? 'Hide Settings' : 'Show Settings'}
-                    </Button>
-                    <Button onClick={handleSaveAllSettings}>
-                        Save Security Settings
                     </Button>
                 </div>
 
@@ -115,12 +96,7 @@ export default function Security() {
                             <p>Loading settings...</p>
                         ) : (
                             <pre className="text-xs overflow-auto p-2 bg-slate-100 dark:bg-slate-800 rounded">
-                                {JSON.stringify({
-                                    'security/store_ssh_key_passwords': settings['security/store_ssh_key_passwords'],
-                                    'security/auto_logout_timer': settings['security/auto_logout_timer'],
-                                    'security/require_uppercase': settings['security/require_uppercase'],
-                                    'security/require_numbers': settings['security/require_numbers']
-                                }, null, 2)}
+                                {JSON.stringify(scategories.security, null, 2)}
                             </pre>
                         )}
                     </div>

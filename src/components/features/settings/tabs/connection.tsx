@@ -12,23 +12,8 @@ import { Button } from "@/components/ui/button"
 import { useState } from "react"
 
 export default function Connection() {
-    const { settings, updateSettings, isLoading } = useSettings();
+    const { settings, updateSettings, isLoading, scategories } = useSettings();
     const [showSettings, setShowSettings] = useState(false);
-
-    const handleSaveAllSettings = async () => {
-        try {
-            // Example of updating multiple settings at once
-            await updateSettings({
-                'connection/ssh_timeout': '30',
-                'connection/retry_attempts': '5',
-                'connection/keep_alive_interval': '60'
-            });
-            alert('Connection settings updated successfully!');
-        } catch (error) {
-            console.error('Failed to update settings:', error);
-            alert('Failed to update settings');
-        }
-    };
 
     return (
         <div className="space-y-6 mt-6">
@@ -70,13 +55,10 @@ export default function Connection() {
             </div>
 
             <div className="space-y-3 pt-6 border-t">
-                <Label>Settings Demo</Label>
+                <Label>Settings JSON</Label>
                 <div className="flex space-x-4">
                     <Button onClick={() => setShowSettings(!showSettings)}>
                         {showSettings ? 'Hide Settings' : 'Show Settings'}
-                    </Button>
-                    <Button onClick={handleSaveAllSettings}>
-                        Save Connection Settings
                     </Button>
                 </div>
 
@@ -87,11 +69,7 @@ export default function Connection() {
                             <p>Loading settings...</p>
                         ) : (
                             <pre className="text-xs overflow-auto p-2 bg-slate-100 dark:bg-slate-800 rounded">
-                                {JSON.stringify({
-                                    'connection/ssh_timeout': settings['connection/ssh_timeout'],
-                                    'connection/retry_attempts': settings['connection/retry_attempts'],
-                                    'connection/keep_alive_interval': settings['connection/keep_alive_interval']
-                                }, null, 2)}
+                                {JSON.stringify(scategories.connection, null, 2)}
                             </pre>
                         )}
                     </div>
