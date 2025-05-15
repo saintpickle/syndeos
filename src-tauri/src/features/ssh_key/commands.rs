@@ -1,7 +1,7 @@
 use super::service;
 use tauri::AppHandle;
 use super::model::SshKey;
-use crate::common::database::connection;
+use crate::database::connection;
 
 #[tauri::command]
 pub fn init_ssh_keys(app_handle: AppHandle) -> Result<Vec<SshKey>, String> {

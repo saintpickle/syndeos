@@ -1,7 +1,7 @@
 use super::service;
 use tauri::AppHandle;
 use super::model::Server;
-use crate::common::database::connection;
+use crate::database::connection;
 
 #[tauri::command]
 pub fn get_server(app_handle: AppHandle, id: i64) -> Result<Server, String> {

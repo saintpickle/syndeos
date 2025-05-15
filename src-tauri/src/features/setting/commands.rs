@@ -1,7 +1,7 @@
 use super::service;
 use tauri::AppHandle;
 use super::model::Setting;
-use crate::common::database::connection;
+use crate::database::connection;
 
 #[tauri::command]
 pub fn init_default_settings(app_handle: AppHandle) -> Result<(), String> {

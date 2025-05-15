@@ -1,8 +1,9 @@
 mod common;
 mod features;
+mod database;
 
 use tauri::AppHandle;
-use common::database::connection;
+use database::connection;
 
 #[tauri::command]
 fn init_app(app_handle: AppHandle) -> Result<String, String> {
