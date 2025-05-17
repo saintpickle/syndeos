@@ -57,7 +57,7 @@ export default function UI() {
                 <Label id="date-format-preference">Date Format Preference</Label>
                 <Select
                     value={settings['ui/date_format'] || 'MM/DD/YYYY'}
-                    onValueChange={(value) => updateSetting('ui/date_format_preference', value)}
+                    onValueChange={(value) => updateSetting('ui/date_format', value)}
                 >
                     <SelectTrigger className="w-[180px] bg-white mt-2">
                         <SelectValue placeholder="Select a format" />
