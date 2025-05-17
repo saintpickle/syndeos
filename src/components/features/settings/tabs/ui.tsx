@@ -63,9 +63,9 @@ export default function UI() {
                         <SelectValue placeholder="Select a format" />
                     </SelectTrigger>
                     <SelectContent>
-                        <SelectItem value="MM/DD/YYYY">MM/DD/YYYY</SelectItem>
-                        <SelectItem value="DD/MM/YYYY">DD/MM/YYYY</SelectItem>
-                        <SelectItem value="YYYY-MM-DD">YYYY-MM-DD</SelectItem>
+                        <SelectItem value="MM/DD/YYYY">MM DD, YYYY at HH:MM:SS</SelectItem>
+                        <SelectItem value="DD/MM/YYYY">DD MM YYYY at HH:MM:SS</SelectItem>
+                        <SelectItem value="YYYY-MM-DD">ISO format (YYYY-MM-DD)</SelectItem>
                     </SelectContent>
                 </Select>
             </div>
