@@ -1,5 +1,6 @@
 import * as React from "react";
 import {useState} from "react";
+import {useGlobalState} from "@/components/providers/global-state.tsx";
 import {useForm} from "react-hook-form";
 import {z} from "zod";
 import {zodResolver} from "@hookform/resolvers/zod";
@@ -40,7 +41,6 @@ import {SshKey, SshKeys} from "@/types.ts";
 import {Textarea} from "@/components/ui/textarea";
 import { toast } from "sonner";
 
-// Define the schema with proper types
 const serverFormSchema = z.object({
     name: z.string().min(1, "Server name is required"),
     hostname: z.string().min(1, "Hostname is required"),
@@ -66,6 +66,7 @@ export function AddServerForm({
                                   onSuccess,
                                   children,
                               }: AddServerFormProps) {
+    const {fetchServers} = useGlobalState();
     const [open, setOpen] = useState(false);
     const [sshKeys, setSshKeys] = useState<SshKeys>([]);
     const [loadingKeys, setLoadingKeys] = useState(false);
@@ -110,7 +111,6 @@ export function AddServerForm({
         try {
             setIsSubmitting(true);
 
-            // Format the data to match the expected Server model on the backend
             const serverData = {
                 name: data.name,
                 hostname: data.hostname,
@@ -136,6 +136,8 @@ export function AddServerForm({
             form.reset();
 
             toast.success("Server Added Successfully");
+
+            await fetchServers();
         } catch (error) {
             console.error("Error adding server:", error);
             toast.error("Error Adding Server");

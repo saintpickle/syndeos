@@ -1,9 +1,7 @@
-import { useState, useEffect } from 'react';
-import { invoke } from '@tauri-apps/api/core';
 import { usePageContext } from '@/components/providers/page';
 import { useServerContext } from '@/components/providers/server';
+import { useGlobalState } from '@/components/providers/global-state.tsx';
 import { Button } from '@/components/ui/button';
-import { Servers } from "@/types.ts";
 import {
   Table,
   TableBody,
@@ -20,38 +18,10 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { MoreHorizontal, EyeIcon, EyeOffIcon } from "lucide-react";
 
-export default function ServersPage() {
-    const [servers, setServers] = useState<Servers>([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
-    const [visibleIpMap, setVisibleIpMap] = useState<Record<number, boolean>>({});
+export default function ServersPage(){
+    const { servers, setServers, loading, error, visibleIpMap, toggleIpVisibility } = useGlobalState();
     const { setCurrentPage } = usePageContext();
     const { setSelectedServerId, setServerData } = useServerContext();
-
-    const toggleIpVisibility = (serverId: number) => {
-        setVisibleIpMap(prev => ({
-            ...prev,
-            [serverId]: !prev[serverId]
-        }));
-    };
-
-    useEffect(() => {
-        const fetchServers = async () => {
-            try {
-                setLoading(true);
-                const result = await invoke<Servers>('get_servers');
-                setServers(result);
-                setError(null);
-            } catch (err) {
-                console.error('Failed to fetch servers:', err);
-                setError('Failed to load servers. Please try again.');
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchServers();
-    }, []);
 
     const handleViewDetails = (serverId: number) => {
         const server = servers.find(s => s.id === serverId) || null;
